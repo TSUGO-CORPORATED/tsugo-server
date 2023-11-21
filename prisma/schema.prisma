@@ -16,6 +16,7 @@ model User {
   firstName                 String         @db.VarChar(255)
   lastName                  String         @db.VarChar(255)
   profilePicture            Bytes?
+  about                     String?
   userLanguage              UserLanguage[]
   message                   Message[]
   appointmentClientUser     Appointment[]  @relation("clientUser")
@@ -44,8 +45,10 @@ model Appointment {
   locationLongitude        Decimal
   appointmentDateTime      DateTime
   appointmentNote          String?
-  reviewRating             Int?      @db.SmallInt
-  reviewNote               String?
+  reviewClientRating       Int?      @db.SmallInt
+  reviewClientNote         String?
+  reviewTranslatorRating   Int?      @db.SmallInt
+  reviewTranslatorNote     String?
   message                  Message[]
 }
 
