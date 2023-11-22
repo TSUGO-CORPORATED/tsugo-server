@@ -1,58 +1,58 @@
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
+// Data type interface
+interface User {
+  uid: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+}
+
+interface UserLanguage {
+  userId: number,
+  language: string,
+  proficiency: string,
+  certifications?: string,
+}
+
 export default {
-  async getUser(email: string) {        
-    async function prismaGetUser(email: string) {
-      return await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-        }
-      });
-    }
-    const data = await prismaGetUser(email)
-      .then(async (res) => {
-        await prisma.$disconnect();
-        // console.log(res);
-        return res;
-      })
-      .catch(async (err) => {
-        // console.error(e)
-        await prisma.$disconnect();
-        process.exit(1);
-      });
+  async createUser({ uid, email, firstName, lastName }: User) {
+    const data = await prisma.user.create({
+      data: {
+        uid: uid,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+      }
+    }); 
+
     return data;
   },
 
-  async createUser(email: string, firstName: string, lastName: string) {
-    async function prismaCreateUser(email: string, firstName: string, lastName: string) {
-      return await prisma.user.create({
-        data: {
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-        }
-      });
-    }
-    
-    const data = await prismaCreateUser(email, firstName, lastName)
-      .then(async (res) => {
-        await prisma.$disconnect();
-        // console.log(res);
-        return res;
-      })
-      .catch(async (err) => {
-        // console.error(e)
-        await prisma.$disconnect();
-        process.exit(1);
-      });
+  async addLanguages(userLanguage: UserLanguage[]) {
+    const data = await prisma.userLanguage.createMany({
+      data: userLanguage,
+    });
 
     return data;
-  }
+  },
+
+  async getUser(uid: string) {        
+    const data = await prisma.user.findFirst({
+      where: {
+        uid: uid,
+      },
+      select: {
+        id: true,
+        uid: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+      }
+    });
+
+    return data;
+  },
 };

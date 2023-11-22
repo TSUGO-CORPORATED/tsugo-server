@@ -16,10 +16,6 @@ const io = new Server(server);
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Express + TypeScript (AND WEBSOCKETS :)) Server, Yo! Hello');
-  });
-
 // WEBSOCKET
 io.on("connection", (socket: Socket) => {
   console.log("a user connected");
@@ -37,16 +33,25 @@ io.on("connection", (socket: Socket) => {
 // IMPORTING DATABASE CONTROLLER
 import userController from "./src/user/user-controller";
 
+// Test
+app.get('/', (req: Request, res: Response) => {
+  res.send('Express + TypeScript (AND WEBSOCKETS :)) Server, Yo! Hello');
+});
+
 // User
-app.get('/user/:email', userController.getUser);
-  // to access: http://localhost:8080/user/abc@gmail.com
-  // this has parameter "id" that must be specified
-  // will return an object containing the user id, email, first name and last name
-  // ex: {id:31, email:"client1@gmail.com", firstName:"firstname123", lastName:"lastname123"}
+// Create user
 app.post('/user', userController.createUser);
   // to access: http://localhost:8080/user
   // body, raw, json
-  // ex: {email: "testemail", firstName: "firstname", lastName: "lastname"}
+  // ex: {"uid": "als;djad234234", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}]}
+  // the language must be in an array containing objects
+// Get user information
+app.get('/user/:uid', userController.getUser);
+  // to access: http://localhost:8080/user/sdfa191asdf1a9s1df
+  // this has parameter "uid" that must be specified
+  // will return an object containing the user id, uid, email, first name and last name
+  // ex: {id:31, uid:"als;dnv189", email:"client1@gmail.com", firstName:"firstname123", lastName:"lastname123"}
+
 
   // INITIATE SERVER
 const PORT: string = process.env.PORT || "8080";
