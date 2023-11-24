@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Data type interface
+// DATA TYPE INTERFACES
 interface User {
   uid: string,
   email: string,
@@ -17,6 +17,13 @@ interface UserLanguage {
   certifications?: string,
 }
 
+interface UserReturn {
+  id: number,
+  firstName: string,
+  lastName: string,
+}
+
+// MODEL FUNCTIONS
 export default {
   async createUser({ uid, email, firstName, lastName }: User) {
     const data = await prisma.user.create({
@@ -40,14 +47,12 @@ export default {
   },
 
   async getUser(uid: string) {        
-    const data = await prisma.user.findFirst({
+    const data: UserReturn | null = await prisma.user.findFirst({
       where: {
         uid: uid,
       },
       select: {
         id: true,
-        uid: true,
-        email: true,
         firstName: true,
         lastName: true,
       }
