@@ -11,15 +11,17 @@ datasource db {
 }
 
 model User {
-  id                        Int            @id @default(autoincrement())
-  email                     String         @unique @db.VarChar(255)
-  firstName                 String         @db.VarChar(255)
-  lastName                  String         @db.VarChar(255)
-  profilePicture            Bytes?
-  userLanguage              UserLanguage[]
-  message                   Message[]
-  appointmentClientUser     Appointment[]  @relation("clientUser")
-  appointmentTranslatorUser Appointment[]  @relation("translatorUser")
+  id                         Int            @id @default(autoincrement())
+  uid                        String         @db.VarChar(255)
+  email                      String         @unique @db.VarChar(255)
+  firstName                  String         @db.VarChar(255)
+  lastName                   String         @db.VarChar(255)
+  profilePicture             Bytes?
+  about                      String?
+  userLanguage               UserLanguage[]
+  message                    Message[]
+  appointmentClientUser      Appointment[]  @relation("clientUser")
+  appointmentInterpreterUser Appointment[]  @relation("interpreterUser")
 }
 
 model UserLanguage {
@@ -32,21 +34,23 @@ model UserLanguage {
 }
 
 model Appointment {
-  id                       Int       @id @default(autoincrement())
-  status                   String    @db.VarChar(50)
-  clientUser               User      @relation("clientUser", fields: [clientUserId], references: [id])
-  clientUserId             Int
-  clientSpokenLanguage     String    @db.VarChar(50)
-  translatorUser           User?     @relation("translatorUser", fields: [translatorUserId], references: [id])
-  translatorUserId         Int?
-  translatorSpokenLanguage String    @db.VarChar(50)
-  locationLatitude         Decimal
-  locationLongitude        Decimal
-  appointmentDateTime      DateTime
-  appointmentNote          String?
-  reviewRating             Int?      @db.SmallInt
-  reviewNote               String?
-  message                  Message[]
+  id                        Int       @id @default(autoincrement())
+  status                    String    @db.VarChar(50)
+  clientUser                User      @relation("clientUser", fields: [clientUserId], references: [id])
+  clientUserId              Int
+  clientSpokenLanguage      String    @db.VarChar(50)
+  interpreterUser           User?     @relation("interpreterUser", fields: [interpreterUserId], references: [id])
+  interpreterUserId         Int?
+  interpreterSpokenLanguage String    @db.VarChar(50)
+  locationLatitude          Decimal
+  locationLongitude         Decimal
+  appointmentDateTime       DateTime
+  appointmentNote           String?
+  reviewClientRating        Int?      @db.SmallInt
+  reviewClientNote          String?
+  reviewInterpreterRating   Int?      @db.SmallInt
+  reviewInterpreterNote     String?
+  message                   Message[]
 }
 
 model Message {

@@ -1,58 +1,84 @@
 import { PrismaClient } from '@prisma/client';
+import { UserCreate, UserLanguage, UserReturn, UserUpdateInfo } from '../globals';
+
 const prisma = new PrismaClient();
 
+// MODEL FUNCTIONS
 export default {
-  async getUser(email: string) {        
-    async function prismaGetUser(email: string) {
-      return await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-        }
-      });
-    }
-    const data = await prismaGetUser(email)
-      .then(async (res) => {
-        await prisma.$disconnect();
-        // console.log(res);
-        return res;
-      })
-      .catch(async (err) => {
-        // console.error(e)
-        await prisma.$disconnect();
-        process.exit(1);
-      });
+  async createUser({ uid, email, firstName, lastName }: UserCreate) {
+    const data = await prisma.user.create({
+      data: {
+        uid: uid,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+      }
+    }); 
+
     return data;
   },
 
-  async createUser(email: string, firstName: string, lastName: string) {
-    async function prismaCreateUser(email: string, firstName: string, lastName: string) {
-      return await prisma.user.create({
-        data: {
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-        }
-      });
-    }
-    
-    const data = await prismaCreateUser(email, firstName, lastName)
-      .then(async (res) => {
-        await prisma.$disconnect();
-        // console.log(res);
-        return res;
-      })
-      .catch(async (err) => {
-        // console.error(e)
-        await prisma.$disconnect();
-        process.exit(1);
-      });
+  async addLanguages(userLanguage: UserLanguage[]) {
+    const data = await prisma.userLanguage.createMany({
+      data: userLanguage,
+    });
 
     return data;
-  }
+  },
+
+  async getUser(uid: string) {        
+    const data: UserReturn | null = await prisma.user.findFirst({
+      where: {
+        uid: uid,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      }
+    });
+
+    return data;
+  },
+
+  async getUserDetail(id: number) {
+    const data: UserReturn | null = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        profilePicture: true,
+        about: true,
+        userLanguage: {
+          select: {
+            id: true,
+            language: true,
+            proficiency: true,
+            certifications: true
+          }
+        }
+      }
+    });
+
+    return data;
+  },
+
+  async updateUserInfo({ id, firstName, lastName, about }: UserUpdateInfo ) {
+    const data = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        about: about,
+      }
+    });
+
+    return data;
+  },
 };
