@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { AppointmentOverview, AppointmentCreate, AppointmentDetail } from '../globals';
+import { AppointmentOverview, AppointmentCreate, AppointmentDetail, ReviewAdd } from '../globals';
 
 const prisma = new PrismaClient();
 
@@ -70,7 +70,19 @@ export default {
             data: {
                 status: "Completed",
             }
-        })
+        });
+    },
+
+    async addReview({ appointmentId, role, reviewRating, reviewNote }: ReviewAdd ) {
+        await prisma.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                ...(role === 'client' ? {reviewClientRating: reviewRating} : {reviewInterpreterRating: reviewRating}),
+                ...(role === 'client' ? {reviewClientNote: reviewNote} : {reviewInterpreterNote: reviewNote}),
+            }
+        });
     },
 
     async getAppointmentDetail(appointmentId: number) {
@@ -110,7 +122,7 @@ export default {
         return data;
     },
 
-    async getAppointment(type: "client" | "interpreter", userId: number, status: string[]) {
+    async getAppointmentOverview(role: string, userId: number, status: string[]) {
         const data: AppointmentOverview[] = await prisma.appointment.findMany({
             select: {
                 id: true,
@@ -122,7 +134,7 @@ export default {
                 appointmentDateTime: true,
             },
             where: {
-                ...(type === 'client' ? {clientUserId: userId} : {interpreterUserId: userId}),
+                ...(role === 'client' ? {clientUserId: userId} : {interpreterUserId: userId}),
                 status: { in: status},
             },
         });

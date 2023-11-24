@@ -1,49 +1,13 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-
-// DATA TYPE INTERFACES
-interface UserInput {
-  uid: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-}
-
-interface UserCreated {
-  id: number;
-  uid: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profilePicture: Buffer | null;
-  about: string | null;
-}
-
-interface Language {
-  language: string,
-  proficiency: string,
-  certifications?: string,
-}
-
-interface UserLanguage {
-  userId: number,
-  language: string,
-  proficiency: string,
-  certifications?: string,
-}
-
-interface UserReturn {
-  id: number,
-  firstName: string,
-  lastName: string,
-}
+import { UserCreate, UserCreated, UserReturn, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage } from "../globals";
 
 // CONTROLLER FUNCTIONS
 export default {
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       // Deconstructing data received
-      const { uid, email, firstName, lastName }: UserInput = req.body;
+      const { uid, email, firstName, lastName }: UserCreate = req.body;
       
       // Registering user data to database
       const userCreated: UserCreated = await userModel.createUser({ uid, email, firstName, lastName });
@@ -81,6 +45,36 @@ export default {
       res.status(200).send(JSON.stringify(data));
     } catch {
       res.status(500).send("Failed to get user");
+    }
+  },
+
+  async getUserDetail(req: Request, res: Response): Promise<void> {
+    try {
+      const id: number = Number(req.params.id)
+      const data: UserReturn | null = await userModel.getUserDetail(id);
+
+      res.status(200).send(JSON.stringify(data));
+    } catch {
+      res.status(500).send("Failed to get user detail");
+    }
+  },
+
+  async updateUserInfo(req: Request, res: Response): Promise<void> {
+    try {
+      // Update user info
+      const { id, firstName, lastName, about }: UserUpdateInfo = req.body;
+      await userModel.updateUserInfo({ id, firstName, lastName, about });
+
+      // Update user language
+      const updatedLanguages: UserUpdateLanguage[] = req.body.languages;
+      // await userModel.updateUserLanguage(updatedLanguages);
+      // separate existing language, 
+      // update 
+      // add
+
+      res.status(200).send(JSON.stringify("User info updated"));
+    } catch {
+      res.status(500).send("Failed to update user");
     }
   },
 };

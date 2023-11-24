@@ -1,31 +1,11 @@
 import { PrismaClient } from '@prisma/client';
+import { UserCreate, UserLanguage, UserReturn, UserUpdateInfo } from '../globals';
 
 const prisma = new PrismaClient();
 
-// DATA TYPE INTERFACES
-interface User {
-  uid: string,
-  email: string,
-  firstName: string,
-  lastName: string,
-}
-
-interface UserLanguage {
-  userId: number,
-  language: string,
-  proficiency: string,
-  certifications?: string,
-}
-
-interface UserReturn {
-  id: number,
-  firstName: string,
-  lastName: string,
-}
-
 // MODEL FUNCTIONS
 export default {
-  async createUser({ uid, email, firstName, lastName }: User) {
+  async createUser({ uid, email, firstName, lastName }: UserCreate) {
     const data = await prisma.user.create({
       data: {
         uid: uid,
@@ -55,6 +35,47 @@ export default {
         id: true,
         firstName: true,
         lastName: true,
+      }
+    });
+
+    return data;
+  },
+
+  async getUserDetail(id: number) {
+    const data: UserReturn | null = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        profilePicture: true,
+        about: true,
+        userLanguage: {
+          select: {
+            id: true,
+            language: true,
+            proficiency: true,
+            certifications: true
+          }
+        }
+      }
+    });
+
+    return data;
+  },
+
+  async updateUserInfo({ id, firstName, lastName, about }: UserUpdateInfo ) {
+    const data = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        about: about,
       }
     });
 
