@@ -8,15 +8,6 @@ import { Server } from "socket.io";
 // const http = require("http");
 // const {Server} = require("socket.io");
 
-// CONNECT POSTGRES 
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
 // CONFIGURE MODULES
 const app: Express = express();
 dotenv.config({path: "./.env"}); 
