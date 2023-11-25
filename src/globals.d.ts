@@ -37,14 +37,22 @@ export interface UserLanguage {
 }
 
 export interface UserUpdateInfo {
-  id: number,
+  userId: number,
   firstName: string,
   lastName: string,
-  about: string,
+  about?: string,
 }
 
 export interface UserUpdateLanguage {
   id: number,
+  language: string,
+  proficiency: string,
+  certifications?: string,
+}
+
+export interface UserUpdateLanguage2 {
+  id: number,
+  userId: number,
   language: string,
   proficiency: string,
   certifications?: string,

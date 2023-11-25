@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCreate, UserLanguage, UserReturn, UserUpdateInfo } from '../globals';
+import { UserCreate, UserLanguage, UserReturn, UserUpdateInfo, UserUpdateLanguage2 } from '../globals';
 
 const prisma = new PrismaClient();
 
@@ -67,10 +67,10 @@ export default {
     return data;
   },
 
-  async updateUserInfo({ id, firstName, lastName, about }: UserUpdateInfo ) {
-    const data = await prisma.user.update({
+  async updateUserInfo({ userId, firstName, lastName, about }: UserUpdateInfo ) {
+    await prisma.user.update({
       where: {
-        id: id,
+        id: userId,
       },
       data: {
         firstName: firstName,
@@ -78,7 +78,24 @@ export default {
         about: about,
       }
     });
+  },
 
-    return data;
+  async updateUserLanguage(changedLanguage: UserUpdateLanguage2) {
+    await prisma.userLanguage.upsert({
+      where: {
+        id: changedLanguage.id,
+      },
+      update: {
+        language: changedLanguage.language,
+        proficiency: changedLanguage.proficiency,
+        certifications: changedLanguage.certifications,
+      },
+      create: {
+        userId: changedLanguage.userId,
+        language: changedLanguage.language,
+        proficiency: changedLanguage.proficiency,
+        certifications: changedLanguage.certifications,
+      },
+    });
   },
 };
