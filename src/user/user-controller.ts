@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-import { UserCreate, UserCreated, UserReturn, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage } from "../globals";
+import { UserCreate, UserCreated, UserReturn, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -11,11 +11,11 @@ export default {
       
       // Registering user data to database
       const userCreated: UserCreated = await userModel.createUser({ uid, email, firstName, lastName });
-      // console.log(userCreated);
+      console.log(userCreated);
       
       // Registering user language to database
         // currently only run if language is being registered, subject to change
-      if (req.body.language) {
+      if (req.body.languages) {
         const languages: Language[] = req.body.languages;
         console.log(languages);
         const userLanguage: UserLanguage[] = [];
@@ -27,7 +27,7 @@ export default {
             certifications: language.certifications,
           })
         }
-        // console.log(userLanguage);
+        console.log(userLanguage);
         userModel.addLanguages(userLanguage);
       }
 
@@ -62,15 +62,24 @@ export default {
   async updateUserInfo(req: Request, res: Response): Promise<void> {
     try {
       // Update user info
-      const { id, firstName, lastName, about }: UserUpdateInfo = req.body;
-      await userModel.updateUserInfo({ id, firstName, lastName, about });
+      const { userId, firstName, lastName, about }: UserUpdateInfo = req.body;
+      await userModel.updateUserInfo({ userId, firstName, lastName, about });
 
-      // Update user language
+      // Update language
       const updatedLanguages: UserUpdateLanguage[] = req.body.languages;
-      // await userModel.updateUserLanguage(updatedLanguages);
-      // separate existing language, 
-      // update 
-      // add
+      for (const language of updatedLanguages) {
+        const changedLanguage: UserUpdateLanguage2 = {
+            id: language.id || 0,
+              // this assigns id 0 if the language is new
+            userId: userId,
+            language: language.language,
+            proficiency: language.proficiency,
+            certifications: language.certifications,
+        }
+        console.log(changedLanguage);
+        await userModel.updateUserLanguage(changedLanguage);
+          // update can only be done per record, so have to use loop
+      }
 
       res.status(200).send(JSON.stringify("User info updated"));
     } catch {

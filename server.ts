@@ -63,6 +63,12 @@ app.get('/user/detail/:id', userController.getUserDetail);
   // will return an object containing the user full information
   // ex: {"id":55,"email":"test1@gmail.com","firstName":"first1","lastName":"last1","profilePicture":null,"about":null,"userLanguage":[]}
 app.put('/user', userController.updateUserInfo);
+  // to access: http://localhost:8080/user
+  // this path will update user info
+  // body content: {"userId": 61, "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
+  // in the case wehre new language is added, the id of the language should be left blank
+  // about is optional
+  // will not return anything, just text
 
 // Appointment
 // Create appointment for client
