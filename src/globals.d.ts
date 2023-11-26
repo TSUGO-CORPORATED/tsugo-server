@@ -17,10 +17,27 @@ export interface UserCreated {
   about: string | null;
 }
 
-export interface UserReturn {
+export interface UserGet {
   id: number,
   firstName: string,
   lastName: string,
+}
+
+export interface UserGetDetailLanguage {
+  id: number,
+  language: string,
+  proficiency: string,
+  certifications?: string | null,
+}
+
+export interface UserGetDetail {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: Buffer | null;
+  about: string | null;
+  userLanguage: UserGetDetailLanguage[];
 }
 
 export interface Language {
@@ -37,7 +54,15 @@ export interface UserLanguage {
 }
 
 export interface UserUpdateInfo {
+  uid: string,
   userId: number,
+  firstName: string,
+  lastName: string,
+  about?: string,
+}
+
+export interface UserUpdateInfo2 {
+  userId:  number,
   firstName: string,
   lastName: string,
   about?: string,

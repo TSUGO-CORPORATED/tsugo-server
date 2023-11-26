@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-import { UserCreate, UserCreated, UserReturn, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import { UserCreate, UserCreated, UserGet, UserGetDetail, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -40,7 +40,7 @@ export default {
   async getUser(req: Request, res: Response): Promise<void> {
     try {
       const uid: string = req.params.uid
-      const data: UserReturn | null = await userModel.getUser(uid);
+      const data: UserGet | null = await userModel.getUser(uid);
 
       res.status(200).send(JSON.stringify(data));
     } catch {
@@ -50,8 +50,8 @@ export default {
 
   async getUserDetail(req: Request, res: Response): Promise<void> {
     try {
-      const id: number = Number(req.params.id)
-      const data: UserReturn | null = await userModel.getUserDetail(id);
+      const uid: string = req.params.uid;
+      const data: UserGetDetail | null = await userModel.getUserDetail(uid);
 
       res.status(200).send(JSON.stringify(data));
     } catch {
@@ -62,7 +62,7 @@ export default {
   async updateUserInfo(req: Request, res: Response): Promise<void> {
     try {
       // Update user info
-      const { userId, firstName, lastName, about }: UserUpdateInfo = req.body;
+      const { uid, userId, firstName, lastName, about }: UserUpdateInfo = req.body;
       await userModel.updateUserInfo({ userId, firstName, lastName, about });
 
       // Update language
