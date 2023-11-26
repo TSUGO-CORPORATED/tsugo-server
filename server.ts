@@ -56,7 +56,7 @@ app.get('/user/:uid', userController.getUser);
   // this path will return the user information based on uid
   // this has parameter "uid" that must be specified
   // will return an object containing the user id, first name and last name
-  // ex: {"id":55, "uid":"asldfja;skf",firstName":"first1","lastName":"last1"}
+  // ex: {"id":55,firstName":"first1","lastName":"last1"}
 app.get('/user/detail/:uid', userController.getUserDetail);
   // to access: http://localhost:8080/user/detail/testuid
   // this path will return full user information based on user uid
@@ -65,7 +65,7 @@ app.get('/user/detail/:uid', userController.getUserDetail);
 app.put('/user', userController.updateUserInfo);
   // to access: http://localhost:8080/user
   // this path will update user info
-  // body content: {"userId": 63, "uid": "testuid", "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
+  // body content: {"userId": 63, "uid":"testuid", "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
   // in the case wehre new language is added, the id of the language should be left blank
   // about is optional
   // will not return anything, just text
