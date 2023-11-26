@@ -75,8 +75,9 @@ app.put('/user', userController.updateUserInfo);
 app.post('/appointment', appointmentController.createAppointment);
   // to access: http://localhost:8080/appointment
   // this path will create a new appointment
-  // body content: {"status": "Requested","appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationDetail": "testlocationdetail","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
+  // body content: {"appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationDetail": "testlocationdetail","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
   // will not return anything, just text
+  // appointmentDateTime should be in ISO string
 
 // Find appointment for interpreter
 app.get('/appointment', appointmentController.findAppointment);
