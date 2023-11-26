@@ -5,17 +5,20 @@ const prisma = new PrismaClient();
 
 // MODEL FUNCTIONS
 export default {
-    async createAppointment({ clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate) {
+    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationDetail, appointmentDateTime, appointmentNote }: AppointmentCreate) {
         await prisma.appointment.create({
             data: {
+                appointmentTitle: appointmentTitle,
+                appointmentType: appointmentType,
+                appointmentDateTime: appointmentDateTime,
+                appointmentNote: appointmentNote,
                 status: "Requested",
                 clientUserId: clientUserId,
                 clientSpokenLanguage: clientSpokenLanguage,
                 interpreterSpokenLanguage: interpreterSpokenLanguage,
                 locationLatitude: locationLatitude,
                 locationLongitude: locationLongitude,
-                appointmentDateTime: appointmentDateTime,
-                appointmentNote: appointmentNote
+                locationDetail: locationDetail,
             }
         });
     },
@@ -25,6 +28,8 @@ export default {
             select: {
                 id: true,
                 status: true,
+                appointmentTitle: true,
+                appointmentType: true,
                 appointmentDateTime: true,
                 locationLatitude: true,
                 locationLongitude: true,
@@ -90,6 +95,8 @@ export default {
             select: {
                 id: true,
                 status: true,
+                appointmentTitle: true,
+                appointmentType: true,
                 clientUser: {
                     select: {
                         firstName: true,
@@ -108,6 +115,7 @@ export default {
                 interpreterSpokenLanguage: true,
                 locationLatitude: true,
                 locationLongitude: true,
+                locationDetail: true,
                 appointmentDateTime: true,
                 appointmentNote: true,
                 reviewClientRating: true,
@@ -127,6 +135,8 @@ export default {
             select: {
                 id: true,
                 status: true,
+                appointmentTitle: true,
+                appointmentType: true,
                 clientSpokenLanguage: true,
                 interpreterSpokenLanguage: true,
                 locationLatitude: true,

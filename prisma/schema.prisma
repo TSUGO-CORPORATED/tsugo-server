@@ -36,16 +36,19 @@ model UserLanguage {
 model Appointment {
   id                        Int       @id @default(autoincrement())
   status                    String    @db.VarChar(50)
+  appointmentTitle          String    @db.VarChar(255)
+  appointmentType           String    @db.VarChar(50)
+  appointmentDateTime       DateTime
+  appointmentNote           String?
   clientUser                User      @relation("clientUser", fields: [clientUserId], references: [id])
   clientUserId              Int
   clientSpokenLanguage      String    @db.VarChar(50)
   interpreterUser           User?     @relation("interpreterUser", fields: [interpreterUserId], references: [id])
   interpreterUserId         Int?
   interpreterSpokenLanguage String    @db.VarChar(50)
-  locationLatitude          Decimal
-  locationLongitude         Decimal
-  appointmentDateTime       DateTime
-  appointmentNote           String?
+  locationLatitude          Decimal?
+  locationLongitude         Decimal?
+  locationDetail            String?
   reviewClientRating        Int?      @db.SmallInt
   reviewClientNote          String?
   reviewInterpreterRating   Int?      @db.SmallInt

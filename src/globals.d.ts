@@ -1,5 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
-
 export interface UserCreate {
   uid: string,
   email: string,
@@ -84,11 +82,14 @@ export interface UserUpdateLanguage2 {
 }
 
 export interface AppointmentCreate {
+  appointmentTitle: string,
+  appointmentType: string,
   clientUserId: number,
   clientSpokenLanguage: string,
   interpreterSpokenLanguage: string,
-  locationLatitude: number,
-  locationLongitude: number,
+  locationLatitude?: string | number | Decimal | DecimalJsLike,
+  locationLongitude?: string | number | Decimal | DecimalJsLike,
+  locationDetail: string,
   appointmentDateTime: string,
   appointmentNote: string,
 }
@@ -96,6 +97,8 @@ export interface AppointmentCreate {
 export interface AppointmentOverview {
   id: number;
   status: string;
+  appointmentTitle: string,
+  appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
   locationLatitude: Decimal;
@@ -105,10 +108,13 @@ export interface AppointmentOverview {
 
 export interface AppointmentDetail {
   id: number;
+  appointmentTitle: string,
+  appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
-  locationLatitude: Decimal;
-  locationLongitude: Decimal;
+  locationLatitude: string | number | Decimal | DecimalJsLike,
+  locationLongitude: string | number | Decimal | DecimalJsLike,
+  locationDetail: string | null;
   appointmentDateTime: Date;
   appointmentNote: string | null;
   status: string;

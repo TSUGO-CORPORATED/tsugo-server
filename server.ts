@@ -75,14 +75,14 @@ app.put('/user', userController.updateUserInfo);
 app.post('/appointment', appointmentController.createAppointment);
   // to access: http://localhost:8080/appointment
   // this path will create a new appointment
-  // body content: {"status": "requested", "clientUserId": 51, "clientSpokenLanguage": "English", "interpreterSpokenLanguage": "Japanese", "locationLatitude": 123124, "locationLongitude": 4548237, "appointmentDateTime": "2023-11-23T10:29:02.366Z", "appointmentNote": "test1"}
+  // body content: {"status": "Requested","appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationDetail": "testlocationdetail","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
   // will not return anything, just text
 
 // Find appointment for interpreter
 app.get('/appointment', appointmentController.findAppointment);
   // to access: http://localhost:8080/appointment
   // this path will return an array of object containing all appointment with status requested
-  // ex: [{"id":3,"status":"Requested","appointmentDateTime":"2023-11-23T10:29:02.366Z","locationLatitude":"123124","locationLongitude":"4548237","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese"}]
+  // ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","appointmentDateTime":"2023-11-23T10:29:02.366Z","locationLatitude":"123124","locationLongitude":"4548237","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese"}]
 
 // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
@@ -123,14 +123,14 @@ app.get('/appointment/overview/:role/:timeframe/:userId', appointmentController.
 // if interpreter, current: return appointment with status ongoing
 // if interpreter, history: return appointment with status completed, cancelled
 // will return an array containing object that contains id, status, appointmentDateTime, locationLatitude, locationLongitude, clientSpokenLanguage, interpreterSpokenLanguage
-// ex: [{"id":1,"status":"Ongoing","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
+// ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
 
 // Get detail appointment data
 app.get('/appointment/detail/:appointmentId', appointmentController.getAppointmentDetail);
   // to access: http://localhost:8080/appointment/detail/1
   // this path will return full detail regarding the appointment
   // will return an object containing appointment detail along with details of client and interpreter
-  // ex: {"id":1,"status":"Ongoing","clientUser":{"firstName":"first3","lastName":"last3","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":{"firstName":"first4","lastName":"last4","profilePicture":null},"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test1","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
+  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
 // Message
 // Create new message
