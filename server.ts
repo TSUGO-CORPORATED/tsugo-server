@@ -47,25 +47,25 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/user', userController.createUser);
   // to access: http://localhost:8080/user
   // this path will create a new user
-  // body content: {"uid": "als;djad234234", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}]}
+  // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
   // the language must be in an array containing objects
 
 // Get user information
 app.get('/user/:uid', userController.getUser);
-  // to access: http://localhost:8080/user/p0Tkul9unvNMKMl7pg9lkDegzJ73
+  // to access: http://localhost:8080/user/testuid
   // this path will return the user information based on uid
   // this has parameter "uid" that must be specified
   // will return an object containing the user id, first name and last name
-  // ex: {"id":55,"firstName":"first1","lastName":"last1"}
-app.get('/user/detail/:id', userController.getUserDetail);
-  // to access: http://localhost:8080/user/detail/55
-  // this path will return full user information based on user id
+  // ex: {"id":55,firstName":"first1","lastName":"last1"}
+app.get('/user/detail/:uid', userController.getUserDetail);
+  // to access: http://localhost:8080/user/detail/testuid
+  // this path will return full user information based on user uid
   // will return an object containing the user full information
   // ex: {"id":55,"email":"test1@gmail.com","firstName":"first1","lastName":"last1","profilePicture":null,"about":null,"userLanguage":[]}
 app.put('/user', userController.updateUserInfo);
   // to access: http://localhost:8080/user
   // this path will update user info
-  // body content: {"userId": 61, "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
+  // body content: {"userId": 63, "uid":"testuid", "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
   // in the case wehre new language is added, the id of the language should be left blank
   // about is optional
   // will not return anything, just text
@@ -75,14 +75,14 @@ app.put('/user', userController.updateUserInfo);
 app.post('/appointment', appointmentController.createAppointment);
   // to access: http://localhost:8080/appointment
   // this path will create a new appointment
-  // body content: {"status": "requested", "clientUserId": 51, "clientSpokenLanguage": "English", "interpreterSpokenLanguage": "Japanese", "locationLatitude": 123124, "locationLongitude": 4548237, "appointmentDateTime": "2023-11-23T10:29:02.366Z", "appointmentNote": "test1"}
+  // body content: {"status": "Requested","appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationDetail": "testlocationdetail","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
   // will not return anything, just text
 
 // Find appointment for interpreter
 app.get('/appointment', appointmentController.findAppointment);
   // to access: http://localhost:8080/appointment
   // this path will return an array of object containing all appointment with status requested
-  // ex: [{"id":3,"status":"Requested","appointmentDateTime":"2023-11-23T10:29:02.366Z","locationLatitude":"123124","locationLongitude":"4548237","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese"}]
+  // ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","appointmentDateTime":"2023-11-23T10:29:02.366Z","locationLatitude":"123124","locationLongitude":"4548237","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese"}]
 
 // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
@@ -123,14 +123,14 @@ app.get('/appointment/overview/:role/:timeframe/:userId', appointmentController.
 // if interpreter, current: return appointment with status ongoing
 // if interpreter, history: return appointment with status completed, cancelled
 // will return an array containing object that contains id, status, appointmentDateTime, locationLatitude, locationLongitude, clientSpokenLanguage, interpreterSpokenLanguage
-// ex: [{"id":1,"status":"Ongoing","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
+// ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
 
 // Get detail appointment data
 app.get('/appointment/detail/:appointmentId', appointmentController.getAppointmentDetail);
   // to access: http://localhost:8080/appointment/detail/1
   // this path will return full detail regarding the appointment
   // will return an object containing appointment detail along with details of client and interpreter
-  // ex: {"id":1,"status":"Ongoing","clientUser":{"firstName":"first3","lastName":"last3","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":{"firstName":"first4","lastName":"last4","profilePicture":null},"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test1","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
+  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
 // Message
 // Create new message

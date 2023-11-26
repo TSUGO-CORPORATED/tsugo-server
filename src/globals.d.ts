@@ -1,5 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
-
 export interface UserCreate {
   uid: string,
   email: string,
@@ -17,10 +15,27 @@ export interface UserCreated {
   about: string | null;
 }
 
-export interface UserReturn {
+export interface UserGet {
   id: number,
   firstName: string,
   lastName: string,
+}
+
+export interface UserGetDetailLanguage {
+  id: number,
+  language: string,
+  proficiency: string,
+  certifications?: string | null,
+}
+
+export interface UserGetDetail {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: Buffer | null;
+  about: string | null;
+  userLanguage: UserGetDetailLanguage[];
 }
 
 export interface Language {
@@ -37,7 +52,15 @@ export interface UserLanguage {
 }
 
 export interface UserUpdateInfo {
+  uid: string,
   userId: number,
+  firstName: string,
+  lastName: string,
+  about?: string,
+}
+
+export interface UserUpdateInfo2 {
+  userId:  number,
   firstName: string,
   lastName: string,
   about?: string,
@@ -59,11 +82,14 @@ export interface UserUpdateLanguage2 {
 }
 
 export interface AppointmentCreate {
+  appointmentTitle: string,
+  appointmentType: string,
   clientUserId: number,
   clientSpokenLanguage: string,
   interpreterSpokenLanguage: string,
-  locationLatitude: number,
-  locationLongitude: number,
+  locationLatitude?: string | number | Decimal | DecimalJsLike,
+  locationLongitude?: string | number | Decimal | DecimalJsLike,
+  locationDetail: string,
   appointmentDateTime: string,
   appointmentNote: string,
 }
@@ -71,6 +97,8 @@ export interface AppointmentCreate {
 export interface AppointmentOverview {
   id: number;
   status: string;
+  appointmentTitle: string,
+  appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
   locationLatitude: Decimal;
@@ -80,10 +108,13 @@ export interface AppointmentOverview {
 
 export interface AppointmentDetail {
   id: number;
+  appointmentTitle: string,
+  appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
-  locationLatitude: Decimal;
-  locationLongitude: Decimal;
+  locationLatitude: string | number | Decimal | DecimalJsLike,
+  locationLongitude: string | number | Decimal | DecimalJsLike,
+  locationDetail: string | null;
   appointmentDateTime: Date;
   appointmentNote: string | null;
   status: string;
