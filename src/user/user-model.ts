@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCreate, UserLanguage, UserReturn, UserUpdateInfo, UserUpdateLanguage2 } from '../globals';
+import { UserCreate, UserLanguage, UserCreated, UserGet, UserGetDetail, UserUpdateInfo2, UserUpdateLanguage2 } from '../globals';
 
 const prisma = new PrismaClient();
 
 // MODEL FUNCTIONS
 export default {
   async createUser({ uid, email, firstName, lastName }: UserCreate) {
-    const data = await prisma.user.create({
+    const data: UserCreated = await prisma.user.create({
       data: {
         uid: uid,
         email: email,
@@ -19,15 +19,13 @@ export default {
   },
 
   async addLanguages(userLanguage: UserLanguage[]) {
-    const data = await prisma.userLanguage.createMany({
+    await prisma.userLanguage.createMany({
       data: userLanguage,
     });
-
-    return data;
   },
 
   async getUser(uid: string) {        
-    const data: UserReturn | null = await prisma.user.findFirst({
+    const data: UserGet | null = await prisma.user.findFirst({
       where: {
         uid: uid,
       },
@@ -41,10 +39,10 @@ export default {
     return data;
   },
 
-  async getUserDetail(id: number) {
-    const data: UserReturn | null = await prisma.user.findUnique({
+  async getUserDetail(uid: string) {
+    const data: UserGetDetail | null = await prisma.user.findFirst({
       where: {
-        id: id,
+        uid: uid,
       },
       select: {
         id: true,
@@ -67,7 +65,7 @@ export default {
     return data;
   },
 
-  async updateUserInfo({ userId, firstName, lastName, about }: UserUpdateInfo ) {
+  async updateUserInfo({ userId, firstName, lastName, about }: UserUpdateInfo2 ) {
     await prisma.user.update({
       where: {
         id: userId,

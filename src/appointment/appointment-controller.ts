@@ -6,8 +6,8 @@ export default {
     async createAppointment(req: Request, res: Response): Promise<void> {
         try {
             // Decontructing data received
-            const { clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
-            await appointmentModel.createAppointment({ clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote });
+            const { appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationDetail, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
+            await appointmentModel.createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationDetail, appointmentDateTime, appointmentNote });
             res.status(201).send("Appointment created in backend database");
         } catch {
             res.status(401).send("Cannot create new appointment");
