@@ -27,7 +27,7 @@ io.on("connection", (socket: Socket) => {
   socket.on("message", async (msg) => {
     const userRoom = [...socket.rooms.values()];
     let parsedMessage = await JSON.parse(msg);
-    messageController.socketCreateMessage(msg.appointment, msg.user, msg.content, msg.timestamp);
+    messageController.socketCreateMessage(parsedMessage.appointment, parsedMessage.user, parsedMessage.content, parsedMessage.timestamp);
     console.log("a user posted: " + parsedMessage.content + " in room: " + userRoom[1]);
     io.to(userRoom[1]).emit("message", msg); //TODO: Send from socket and have it remember it's own message, no need to send to it too
   });
