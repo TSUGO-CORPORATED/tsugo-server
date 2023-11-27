@@ -12,7 +12,9 @@ import { Server } from "socket.io";
 const app: Express = express();
 dotenv.config({path: "./.env"}); 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {origin: "*"}
+});
 
 // USING MIDDLEWARE
 app.use(express.json());
@@ -22,10 +24,27 @@ app.use(cors());
 io.on("connection", (socket: Socket) => {
   console.log("a user connected");
 
-  socket.on("message", (msg) => {
-    console.log("a user posted: " + msg);
-    io.emit("message", msg);
+  socket.on("message", async (msg) => {
+    const userRoom = [...socket.rooms.values()];
+    let parsedMessage = await JSON.parse(msg);
+    messageController.socketCreateMessage(msg.appointment, msg.user, msg.content, msg.timestamp);
+    console.log("a user posted: " + parsedMessage.content + " in room: " + userRoom[1]);
+    io.to(userRoom[1]).emit("message", msg); //TODO: Send from socket and have it remember it's own message, no need to send to it too
   });
+
+  socket.on("CONNECT_ROOM", async (msg) => {
+    let parsedMessage = await JSON.parse(msg);
+    socket.join(parsedMessage.room);
+    console.log("connected to room");
+    //TODO: get by room name instead of number
+    const stringedData = JSON.stringify(messageController.socketGetMessagesById(1));
+    socket.to(socket.id).emit("history", stringedData);
+  });
+
+  socket.on("DISCONNECT_ROOM", async (msg) => {
+    let parsedMessage = await JSON.parse(msg);
+    socket.leave(parsedMessage.room);
+  })
 
   socket.on("disconnect", () => {
     console.log("a user disconnected");
@@ -36,6 +55,7 @@ io.on("connection", (socket: Socket) => {
 import userController from "./src/user/user-controller";
 import appointmentController from "./src/appointment/appointment-controller";
 import messageController from "./src/message/message-controller";
+import { json } from "stream/consumers";
 
 // Test
 app.get('/', (req: Request, res: Response) => {
