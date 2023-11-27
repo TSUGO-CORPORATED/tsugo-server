@@ -38,7 +38,7 @@ io.on("connection", (socket: Socket) => {
     console.log("connected to room");
     //TODO: get by room name instead of number
     const stringedData = JSON.stringify(messageController.socketGetMessagesById(parsedMessage.room));
-    socket.to(socket.id).emit("history", stringedData);
+    io.to(socket.id).emit("history", stringedData);
   });
 
   socket.on("DISCONNECT_ROOM", async (msg) => {
