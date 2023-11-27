@@ -27,4 +27,17 @@ export default {
             res.status(500).send("Failed to get appointment");
         }
     },
+
+    async socketGetMessagesById(id: number) {
+        try {
+            const data: MessageGet[] = await messageModel.getMessage(id);
+            return data;
+        } catch {
+            return "error";
+        }
+    },
+
+    async socketCreateMessage(appointmentId: number, userId: number, content: string, messageTimestamp: Date) {
+        await messageModel.createMessage({ appointmentId, userId, content, messageTimestamp });
+    },
 }
