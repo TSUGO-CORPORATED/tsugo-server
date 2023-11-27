@@ -124,7 +124,7 @@ app.get('/appointment/detail/:appointmentId', appointmentController.getAppointme
   // to access: http://localhost:8080/appointment/detail/1
   // this path will return full detail regarding the appointment
   // will return an object containing appointment detail along with details of client and interpreter
-  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
+  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUserId":1,"clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUserId":2,"interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
   // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);

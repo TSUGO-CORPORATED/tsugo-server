@@ -54,6 +54,7 @@ export default {
                 status: true,
                 appointmentTitle: true,
                 appointmentType: true,
+                clientUserId: true,
                 clientUser: {
                     select: {
                         firstName: true,
@@ -62,6 +63,7 @@ export default {
                     }
                 },
                 clientSpokenLanguage: true,
+                interpreterUserId: true,
                 interpreterUser: {
                     select: {
                         firstName: true,
