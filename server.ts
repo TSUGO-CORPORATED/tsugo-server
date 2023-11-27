@@ -80,12 +80,33 @@ app.post('/appointment', appointmentController.createAppointment);
   // appointmentDateTime should be in ISO string
 
 // Find appointment for interpreter
-app.get('/appointment', appointmentController.findAppointment);
+app.get('/appointment/find/:userId', appointmentController.findAppointment);
   // to access: http://localhost:8080/appointment
+  // require userId input. this is require to exclude any appointment made by the client itself
   // this path will return an array of object containing all appointment with status requested
   // ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","appointmentDateTime":"2023-11-23T10:29:02.366Z","locationLatitude":"123124","locationLongitude":"4548237","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese"}]
 
-// Accept appointment by interpreter
+  // Get overview appointment data
+app.get('/appointment/overview/:role/:timeframe/:userId', appointmentController.getAppointmentOverview);
+// to access: http://localhost:8080/appointment/overivew/client/current/55
+// role: client or interpreter
+// timeframe: current or history
+// userId is the id belonging to client or interpreter
+// if client, current: return appointment with status requested, ongoing
+// if client, history: return appointment with status completed, cancelled
+// if interpreter, current: return appointment with status ongoing
+// if interpreter, history: return appointment with status completed, cancelled
+// will return an array containing object that contains id, status, appointmentDateTime, locationLatitude, locationLongitude, clientSpokenLanguage, interpreterSpokenLanguage
+// ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
+
+// Get detail appointment data
+app.get('/appointment/detail/:appointmentId', appointmentController.getAppointmentDetail);
+  // to access: http://localhost:8080/appointment/detail/1
+  // this path will return full detail regarding the appointment
+  // will return an object containing appointment detail along with details of client and interpreter
+  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
+
+  // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
   // to access: http://localhost:8080/accept/appointment/1/52
   // this path will update the appointment to ongoing status and assign the appointment with the interpreter id
@@ -112,26 +133,6 @@ app.patch('/appointment/review', appointmentController.addReview)
   // this path add review to the appointment specified
   // body content: 
   // will not return anything, just text
-
-// Get overview appointment data
-app.get('/appointment/overview/:role/:timeframe/:userId', appointmentController.getAppointmentOverview);
-// to access: http://localhost:8080/appointment/overivew/client/current/55
-// role: client or interpreter
-// timeframe: current or history
-// userId is the id belonging to client or interpreter
-// if client, current: return appointment with status requested, ongoing
-// if client, history: return appointment with status completed, cancelled
-// if interpreter, current: return appointment with status ongoing
-// if interpreter, history: return appointment with status completed, cancelled
-// will return an array containing object that contains id, status, appointmentDateTime, locationLatitude, locationLongitude, clientSpokenLanguage, interpreterSpokenLanguage
-// ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
-
-// Get detail appointment data
-app.get('/appointment/detail/:appointmentId', appointmentController.getAppointmentDetail);
-  // to access: http://localhost:8080/appointment/detail/1
-  // this path will return full detail regarding the appointment
-  // will return an object containing appointment detail along with details of client and interpreter
-  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
 // Message
 // Create new message

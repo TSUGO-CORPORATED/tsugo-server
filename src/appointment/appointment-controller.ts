@@ -24,6 +24,38 @@ export default {
         }
     },
 
+    async getAppointmentDetail(req: Request, res: Response): Promise<void> {
+        try {
+            const appointmentId: number = Number(req.params.appointmentId);
+
+            const data: AppointmentDetail | null = await appointmentModel.getAppointmentDetail(appointmentId);
+
+            res.status(200).send(JSON.stringify(data));
+        } catch {
+            res.status(500).send("Failed to get appointment detail");
+        }
+    },
+
+    async getAppointmentOverview(req: Request, res: Response): Promise<void> {
+        try {
+            const role: string = req.params.role;
+            const timeframe: string = req.params.timeframe; 
+            const userId: number = Number(req.params.userId);
+
+            let status: string[] = [];
+            if (timeframe === 'current' && role === 'client') status = ["Requested", "Ongoing"];
+            else if (timeframe === 'history' && role === 'client') status = ["Completed", "Cancelled"];
+            else if (timeframe === 'current' && role === 'interpreter') status = ["Ongoing"];
+            else if (timeframe === 'history' && role === 'interpreter') status = ["Completed", "Cancelled"];
+
+            const data: AppointmentOverview[] = await appointmentModel.getAppointmentOverview(role, userId, status);
+
+            res.status(200).send(JSON.stringify(data));
+        } catch {
+            res.status(500).send("Failed to get appointment overview");
+        }
+    },
+    
     async acceptAppointment(req: Request, res: Response): Promise<void> {
         try {
             const appointmentId: number = Number(req.params.appointmentId);
@@ -71,38 +103,6 @@ export default {
             res.status(200).send("Review added");
         } catch {
             res.status(500).send("Failed to add review");
-        }
-    },
-
-    async getAppointmentDetail(req: Request, res: Response): Promise<void> {
-        try {
-            const appointmentId: number = Number(req.params.appointmentId);
-
-            const data: AppointmentDetail | null = await appointmentModel.getAppointmentDetail(appointmentId);
-
-            res.status(200).send(JSON.stringify(data));
-        } catch {
-            res.status(500).send("Failed to get appointment detail");
-        }
-    },
-
-    async getAppointmentOverview(req: Request, res: Response): Promise<void> {
-        try {
-            const role: string = req.params.role;
-            const timeframe: string = req.params.timeframe; 
-            const userId: number = Number(req.params.userId);
-
-            let status: string[] = [];
-            if (timeframe === 'current' && role === 'client') status = ["Requested", "Ongoing"];
-            else if (timeframe === 'history' && role === 'client') status = ["Completed", "Cancelled"];
-            else if (timeframe === 'current' && role === 'interpreter') status = ["Ongoing"];
-            else if (timeframe === 'history' && role === 'interpreter') status = ["Completed", "Cancelled"];
-
-            const data: AppointmentOverview[] = await appointmentModel.getAppointmentOverview(role, userId, status);
-
-            res.status(200).send(JSON.stringify(data));
-        } catch {
-            res.status(500).send("Failed to get appointment overview");
         }
     },
 }
