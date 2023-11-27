@@ -45,9 +45,9 @@ export default {
             const userId: number = Number(req.params.userId);
 
             let status: string[] = [];
-            if (timeframe === 'current' && role === 'client') status = ["Requested", "Ongoing"];
+            if (timeframe === 'current' && role === 'client') status = ["Requested", "Accepted"];
             else if (timeframe === 'history' && role === 'client') status = ["Completed", "Cancelled"];
-            else if (timeframe === 'current' && role === 'interpreter') status = ["Ongoing"];
+            else if (timeframe === 'current' && role === 'interpreter') status = ["Accepted"];
             else if (timeframe === 'history' && role === 'interpreter') status = ["Completed", "Cancelled"];
 
             const data: AppointmentOverview[] = await appointmentModel.getAppointmentOverview(role, userId, status);

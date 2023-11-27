@@ -114,7 +114,7 @@ export default {
                 id: appointmentId,
             },
             data: {
-                status: "Ongoing",
+                status: "Accepted",
                 interpreterUserId: interpreterUserId,
             }
         })

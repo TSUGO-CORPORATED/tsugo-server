@@ -112,9 +112,9 @@ app.get('/appointment/overview/:role/:timeframe/:userId', appointmentController.
 // role: client or interpreter
 // timeframe: current or history
 // userId is the id belonging to client or interpreter
-// if client, current: return appointment with status requested, ongoing
+// if client, current: return appointment with status requested, accepted
 // if client, history: return appointment with status completed, cancelled
-// if interpreter, current: return appointment with status ongoing
+// if interpreter, current: return appointment with status accepted
 // if interpreter, history: return appointment with status completed, cancelled
 // will return an array containing object that contains id, status, appointmentDateTime, locationLatitude, locationLongitude, clientSpokenLanguage, interpreterSpokenLanguage
 // ex: [{"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientSpokenLanguage":"English","interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","appointmentDateTime":"2023-11-23T10:29:02.366Z"}]
@@ -129,7 +129,7 @@ app.get('/appointment/detail/:appointmentId', appointmentController.getAppointme
   // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
   // to access: http://localhost:8080/accept/appointment/1/52
-  // this path will update the appointment to ongoing status and assign the appointment with the interpreter id
+  // this path will update the appointment to accepted status and assign the appointment with the interpreter id
   // this path has no body content
   // will not return anything, just text
 
