@@ -16,7 +16,9 @@ export default {
 
     async findAppointment(req: Request, res: Response): Promise<void> {
         try {
-            const data = await appointmentModel.findAppointment();
+            const userId: number = Number(req.params.userId);
+
+            const data = await appointmentModel.findAppointment(userId);
 
             res.status(200).send(JSON.stringify(data));
         } catch {
@@ -55,7 +57,7 @@ export default {
             res.status(500).send("Failed to get appointment overview");
         }
     },
-    
+
     async acceptAppointment(req: Request, res: Response): Promise<void> {
         try {
             const appointmentId: number = Number(req.params.appointmentId);

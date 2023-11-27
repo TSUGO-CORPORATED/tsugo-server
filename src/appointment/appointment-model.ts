@@ -23,7 +23,7 @@ export default {
         });
     },
 
-    async findAppointment() {
+    async findAppointment(userId: number) {
         const data: AppointmentOverview[] = await prisma.appointment.findMany({
             select: {
                 id: true,
@@ -38,56 +38,13 @@ export default {
             },
             where: {
                 status: "Requested",
+                NOT: {
+                    clientUserId: userId,
+                }
             }
         });
 
         return data;
-    },
-
-    async acceptAppointment(appointmentId: number, interpreterUserId: number) {
-        await prisma.appointment.update({
-            where: {
-                id: appointmentId,
-            },
-            data: {
-                status: "Ongoing",
-                interpreterUserId: interpreterUserId,
-            }
-        })
-    },
-
-    async cancelAppointment(appointmentId: number) {
-        await prisma.appointment.update({
-            where: {
-                id: appointmentId,
-            },
-            data: {
-                status: "Cancelled",
-            }
-        })
-    },
-
-    async completeAppointment(appointmentId: number) {
-        await prisma.appointment.update({
-            where: {
-                id: appointmentId,
-            },
-            data: {
-                status: "Completed",
-            }
-        });
-    },
-
-    async addReview({ appointmentId, role, reviewRating, reviewNote }: ReviewAdd ) {
-        await prisma.appointment.update({
-            where: {
-                id: appointmentId,
-            },
-            data: {
-                ...(role === 'client' ? {reviewClientRating: reviewRating} : {reviewInterpreterRating: reviewRating}),
-                ...(role === 'client' ? {reviewClientNote: reviewNote} : {reviewInterpreterNote: reviewNote}),
-            }
-        });
     },
 
     async getAppointmentDetail(appointmentId: number) {
@@ -149,5 +106,51 @@ export default {
             },
         });
         return data;
+    },
+
+    async acceptAppointment(appointmentId: number, interpreterUserId: number) {
+        await prisma.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                status: "Ongoing",
+                interpreterUserId: interpreterUserId,
+            }
+        })
+    },
+
+    async cancelAppointment(appointmentId: number) {
+        await prisma.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                status: "Cancelled",
+            }
+        })
+    },
+
+    async completeAppointment(appointmentId: number) {
+        await prisma.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                status: "Completed",
+            }
+        });
+    },
+
+    async addReview({ appointmentId, role, reviewRating, reviewNote }: ReviewAdd ) {
+        await prisma.appointment.update({
+            where: {
+                id: appointmentId,
+            },
+            data: {
+                ...(role === 'client' ? {reviewClientRating: reviewRating} : {reviewInterpreterRating: reviewRating}),
+                ...(role === 'client' ? {reviewClientNote: reviewNote} : {reviewInterpreterNote: reviewNote}),
+            }
+        });
     },
 }
