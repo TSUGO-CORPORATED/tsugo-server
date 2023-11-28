@@ -97,7 +97,7 @@ app.put('/user', userController.updateUserInfo);
 app.post('/appointment', appointmentController.createAppointment);
   // to access: http://localhost:8080/appointment
   // this path will create a new appointment
-  // body content: {"appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationDetail": "testlocationdetail","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
+  // body content: {"appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationName": "testLocationName","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
   // will not return anything, just text
   // appointmentDateTime should be in ISO string
 
@@ -126,7 +126,7 @@ app.get('/appointment/detail/:appointmentId', appointmentController.getAppointme
   // to access: http://localhost:8080/appointment/detail/1
   // this path will return full detail regarding the appointment
   // will return an object containing appointment detail along with details of client and interpreter
-  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUserId":1,"clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUserId":2,"interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationDetail":"testlocationdetail","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
+  // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUserId":1,"clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUserId":2,"interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationName":"testlocationname","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
   // Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
@@ -153,7 +153,7 @@ app.patch('/appointment/complete/:appointmentId', appointmentController.complete
 app.patch('/appointment/review', appointmentController.addReview)
   // to access: http://localhost:8080/appointment/review/
   // this path add review to the appointment specified
-  // body content: 
+  // body content: {"appointmentId": 4,"role": "client","reviewRating": 4,"reviewNote": "test"}
   // will not return anything, just text
 
 // Message

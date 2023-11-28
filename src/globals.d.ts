@@ -87,9 +87,9 @@ export interface AppointmentCreate {
   clientUserId: number,
   clientSpokenLanguage: string,
   interpreterSpokenLanguage: string,
-  locationLatitude?: string | number | Decimal | DecimalJsLike,
-  locationLongitude?: string | number | Decimal | DecimalJsLike,
-  locationDetail: string,
+  locationLatitude?: string | number | Decimal | DecimalJsLike | null,
+  locationLongitude?: string | number | Decimal | DecimalJsLike | null,
+  locationName?: string | null,
   appointmentDateTime: string,
   appointmentNote: string,
 }
@@ -101,6 +101,7 @@ export interface AppointmentOverview {
   appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
+  locationName: string;
   locationLatitude: Decimal;
   locationLongitude: Decimal;
   appointmentDateTime: Date;
@@ -114,7 +115,7 @@ export interface AppointmentDetail {
   interpreterSpokenLanguage: string;
   locationLatitude: string | number | Decimal | DecimalJsLike,
   locationLongitude: string | number | Decimal | DecimalJsLike,
-  locationDetail: string | null;
+  locationName: string | null;
   appointmentDateTime: Date;
   appointmentNote: string | null;
   status: string;
