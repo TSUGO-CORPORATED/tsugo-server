@@ -101,7 +101,7 @@ export interface AppointmentOverview {
   appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
-  locationName: string;
+  locationName: string | null;
   locationLatitude: Decimal;
   locationLongitude: Decimal;
   appointmentDateTime: Date;
