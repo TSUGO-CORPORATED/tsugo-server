@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 // MODEL FUNCTIONS
 export default {
-    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationDetail, appointmentDateTime, appointmentNote }: AppointmentCreate) {
+    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationName, appointmentDateTime, appointmentNote }: AppointmentCreate) {
         await prisma.appointment.create({
             data: {
                 appointmentTitle: appointmentTitle,
@@ -18,7 +18,7 @@ export default {
                 interpreterSpokenLanguage: interpreterSpokenLanguage,
                 locationLatitude: locationLatitude,
                 locationLongitude: locationLongitude,
-                locationDetail: locationDetail,
+                locationName: locationName,
             }
         });
     },
@@ -31,6 +31,7 @@ export default {
                 appointmentTitle: true,
                 appointmentType: true,
                 appointmentDateTime: true,
+                locationName: true,
                 locationLatitude: true,
                 locationLongitude: true,
                 clientSpokenLanguage: true,
@@ -74,7 +75,7 @@ export default {
                 interpreterSpokenLanguage: true,
                 locationLatitude: true,
                 locationLongitude: true,
-                locationDetail: true,
+                locationName: true,
                 appointmentDateTime: true,
                 appointmentNote: true,
                 reviewClientRating: true,
@@ -98,6 +99,7 @@ export default {
                 appointmentType: true,
                 clientSpokenLanguage: true,
                 interpreterSpokenLanguage: true,
+                locationName: true,
                 locationLatitude: true,
                 locationLongitude: true,
                 appointmentDateTime: true,
