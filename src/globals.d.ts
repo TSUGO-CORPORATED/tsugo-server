@@ -118,11 +118,13 @@ export interface AppointmentDetail {
   appointmentDateTime: Date;
   appointmentNote: string | null;
   status: string;
+  clientUserId: number;
   clientUser: {
     firstName: string;
     lastName: string;
     profilePicture?: any;
   };
+  interpreterUserId?: number | null;
   interpreterUser: {
     firstName: string;
     lastName: string;
