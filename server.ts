@@ -151,7 +151,7 @@ app.patch('/appointment/complete/:appointmentId', appointmentController.complete
 app.patch('/appointment/review', appointmentController.addReview)
   // to access: http://localhost:8080/appointment/review/
   // this path add review to the appointment specified
-  // body content: 
+  // body content: {"appointmentId": 4,"role": "client","reviewRating": 4,"reviewNote": "test"}
   // will not return anything, just text
 
 // Message
