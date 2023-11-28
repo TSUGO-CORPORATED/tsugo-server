@@ -48,7 +48,7 @@ model Appointment {
   interpreterSpokenLanguage String    @db.VarChar(50)
   locationLatitude          Decimal?
   locationLongitude         Decimal?
-  locationDetail            String?
+  locationName          String?       @db.VarChar(255)
   reviewClientRating        Int?      @db.SmallInt
   reviewClientNote          String?
   reviewInterpreterRating   Int?      @db.SmallInt
