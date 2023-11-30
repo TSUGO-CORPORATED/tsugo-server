@@ -57,7 +57,6 @@ io.on("connection", (socket: Socket) => {
 import userController from "./src/user/user-controller";
 import appointmentController from "./src/appointment/appointment-controller";
 import messageController from "./src/message/message-controller";
-import { json } from "stream/consumers";
 
 // Test
 app.get('/', (req: Request, res: Response) => {
@@ -79,11 +78,13 @@ app.get('/user/:uid', userController.getUser);
   // this has parameter "uid" that must be specified
   // will return an object containing the user id, first name and last name
   // ex: {"id":55,firstName":"first1","lastName":"last1"}
+
 app.get('/user/detail/:uid', userController.getUserDetail);
   // to access: http://localhost:8080/user/detail/testuid
   // this path will return full user information based on user uid
   // will return an object containing the user full information
   // ex: {"id":55,"email":"test1@gmail.com","firstName":"first1","lastName":"last1","profilePicture":null,"about":null,"userLanguage":[]}
+
 app.put('/user', userController.updateUserInfo);
   // to access: http://localhost:8080/user
   // this path will update user info
@@ -98,6 +99,14 @@ app.post('/appointment', appointmentController.createAppointment);
   // to access: http://localhost:8080/appointment
   // this path will create a new appointment
   // body content: {"appointmentTitle": "testappointmenttitle","appointmentType": "In-person","clientUserId": 63,"clientSpokenLanguage": "English","interpreterSpokenLanguage": "Japanese","locationLatitude": 123124,"locationLongitude": 4548237,"locationName": "testLocationName","appointmentDateTime": "2023-11-23T10:29:02.366Z","appointmentNote": "test3"}
+  // will not return anything, just text
+  // appointmentDateTime should be in ISO string
+
+// Update appointment data
+app.put('/appointment', appointmentController.updateAppointment)
+  // to access: http://localhost:8080/appointment
+  // this path will update the appointment based on id
+  // body content: 
   // will not return anything, just text
   // appointmentDateTime should be in ISO string
 
@@ -128,7 +137,7 @@ app.get('/appointment/detail/:appointmentId', appointmentController.getAppointme
   // will return an object containing appointment detail along with details of client and interpreter
   // ex: {"id":6,"status":"Requested","appointmentTitle":"testappointmenttitle","appointmentType":"In-person","clientUserId":1,"clientUser":{"firstName":"firstnameupdate","lastName":"lastname","profilePicture":null},"clientSpokenLanguage":"English","interpreterUserId":2,"interpreterUser":null,"interpreterSpokenLanguage":"Japanese","locationLatitude":"123124","locationLongitude":"4548237","locationName":"testlocationname","appointmentDateTime":"2023-11-23T10:29:02.366Z","appointmentNote":"test3","reviewClientRating":null,"reviewClientNote":null,"reviewInterpreterRating":null,"reviewInterpreterNote":null}
 
-  // Accept appointment by interpreter
+// Accept appointment by interpreter
 app.patch('/appointment/accept/:appointmentId/:interpreterUserId', appointmentController.acceptAppointment);
   // to access: http://localhost:8080/accept/appointment/1/52
   // this path will update the appointment to accepted status and assign the appointment with the interpreter id
@@ -153,7 +162,8 @@ app.patch('/appointment/complete/:appointmentId', appointmentController.complete
 app.patch('/appointment/review', appointmentController.addReview)
   // to access: http://localhost:8080/appointment/review/
   // this path add review to the appointment specified
-  // body content: {"appointmentId": 4,"role": "client","reviewRating": 4,"reviewNote": "test"}
+  // body content: {"appointmentId": 4,"role": "client","reviewThumb": true,"reviewNote": "test"}
+  // review thumb is either true (for good) or false (for bad)
   // will not return anything, just text
 
 // Message
@@ -163,6 +173,7 @@ app.post('/message', messageController.createMessage);
   // this path will create a new message in the database 
   // body content: {"appointmentId": 4, "userId": 55, "content": "test message", "messageTimestamp": "2023-11-23T10:29:02.366Z"}
   // the timestamp should be in iso string
+
 // Get all message in according to the appointment
 app.get('/message/:appointmentId', messageController.getMessage);
   // to access: http://localhost:8080/message/4

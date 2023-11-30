@@ -95,6 +95,20 @@ export interface AppointmentCreate {
   appointmentNote: string,
 }
 
+export interface AppointmentUpdate {
+  id: number;
+  appointmentTitle: string,
+  appointmentType: string,
+  clientSpokenLanguage: string,
+  interpreterSpokenLanguage: string,
+  locationName?: string | null,
+  locationAddress?: string | null,
+  locationLatitude?: string | number | Decimal | DecimalJsLike | null,
+  locationLongitude?: string | number | Decimal | DecimalJsLike | null,
+  appointmentDateTime: string,
+  appointmentNote: string,
+}
+
 export interface AppointmentOverview {
   id: number;
   status: string;
