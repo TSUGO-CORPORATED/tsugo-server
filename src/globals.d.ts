@@ -115,7 +115,6 @@ export interface AppointmentDetail {
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
   locationName: string | null;
-  locationDetail: string | null;
   locationLatitude: string | number | Decimal | DecimalJsLike,
   locationLongitude: string | number | Decimal | DecimalJsLike,
   appointmentDateTime: Date;
@@ -133,16 +132,16 @@ export interface AppointmentDetail {
     lastName: string;
     profilePicture?: any;
   } | null;
-  reviewClientThumb: number | null,
+  reviewClientThumb: boolean | null,
   reviewClientNote: string | null,
-  reviewInterpreterThumb: number | null,
+  reviewInterpreterThumb: boolean | null,
   reviewInterpreterNote: string | null,
 } 
 
 export interface ReviewAdd {
   appointmentId: number;
   role: 'client' | 'interpreter';
-  reviewThumb: number;
+  reviewThumb: boolean;
   reviewNote: string;
 }
 
