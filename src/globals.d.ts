@@ -87,9 +87,10 @@ export interface AppointmentCreate {
   clientUserId: number,
   clientSpokenLanguage: string,
   interpreterSpokenLanguage: string,
+  locationName?: string | null,
+  locationAddress?: string | null,
   locationLatitude?: string | number | Decimal | DecimalJsLike | null,
   locationLongitude?: string | number | Decimal | DecimalJsLike | null,
-  locationName?: string | null,
   appointmentDateTime: string,
   appointmentNote: string,
 }
@@ -113,9 +114,9 @@ export interface AppointmentDetail {
   appointmentType: string,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
+  locationName: string | null;
   locationLatitude: string | number | Decimal | DecimalJsLike,
   locationLongitude: string | number | Decimal | DecimalJsLike,
-  locationName: string | null;
   appointmentDateTime: Date;
   appointmentNote: string | null;
   status: string;
@@ -131,16 +132,16 @@ export interface AppointmentDetail {
     lastName: string;
     profilePicture?: any;
   } | null;
-  reviewClientRating: number | null,
+  reviewClientThumb: boolean | null,
   reviewClientNote: string | null,
-  reviewInterpreterRating: number | null,
+  reviewInterpreterThumb: boolean | null,
   reviewInterpreterNote: string | null,
 } 
 
 export interface ReviewAdd {
   appointmentId: number;
   role: 'client' | 'interpreter';
-  reviewRating: number;
+  reviewThumb: boolean;
   reviewNote: string;
 }
 

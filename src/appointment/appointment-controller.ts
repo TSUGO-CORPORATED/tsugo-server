@@ -6,7 +6,7 @@ export default {
     async createAppointment(req: Request, res: Response): Promise<void> {
         try {
             // Decontructing data received
-            const { appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationName, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
+            const { appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
             await appointmentModel.createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationName, appointmentDateTime, appointmentNote });
             res.status(201).send("Appointment created in backend database");
         } catch {
@@ -98,9 +98,9 @@ export default {
     async addReview(req: Request, res: Response): Promise<void> {
         try {
             // Decontructing data received
-            const { appointmentId, role, reviewRating, reviewNote }: ReviewAdd = req.body;
+            const { appointmentId, role, reviewThumb, reviewNote }: ReviewAdd = req.body;
 
-            await appointmentModel.addReview({appointmentId, role, reviewRating, reviewNote});
+            await appointmentModel.addReview({appointmentId, role, reviewThumb, reviewNote});
 
             res.status(200).send("Review added");
         } catch {
