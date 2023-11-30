@@ -159,4 +159,16 @@ export default {
             }
         });
     },
+
+    async calcTotalThumb(userId: number | undefined, role: string) {
+        const data = await prisma.appointment.groupBy({
+            by: ['reviewClientThumb'],
+            _count: true,
+            where: {
+                ...(role === 'client' ? {clientUserId: userId} : {interpreterUserId: userId}),
+                ...(role === 'client' ? {reviewClientThumb: {not: null}} : {reviewInterpreterThumb: {not: null}}),
+            },
+        })
+        return data;
+    }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
 import { UserCreate, UserCreated, UserGet, UserGetDetail, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import appointmentModel from "../appointment/appointment-model";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -53,7 +54,10 @@ export default {
       const uid: string = req.params.uid;
       const data: UserGetDetail | null = await userModel.getUserDetail(uid);
 
-      res.status(200).send(JSON.stringify(data));
+      const clientThumbs = await appointmentModel.calcTotalThumb(data?.id, 'client');
+
+      const sentData = clientThumbs;
+      res.status(200).send(JSON.stringify(sentData));
     } catch {
       res.status(500).send("Failed to get user detail");
     }
