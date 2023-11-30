@@ -71,7 +71,7 @@ app.post('/user', userController.createUser);
   // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
   // the language must be in an array containing objects
 
-// Get user information
+// Get user basic information
 app.get('/user/:uid', userController.getUser);
   // to access: http://localhost:8080/user/testuid
   // this path will return the user information based on uid
@@ -79,12 +79,14 @@ app.get('/user/:uid', userController.getUser);
   // will return an object containing the user id, first name and last name
   // ex: {"id":55,firstName":"first1","lastName":"last1"}
 
+// Get user detail information
 app.get('/user/detail/:uid', userController.getUserDetail);
   // to access: http://localhost:8080/user/detail/testuid
   // this path will return full user information based on user uid
   // will return an object containing the user full information
-  // ex: {"id":55,"email":"test1@gmail.com","firstName":"first1","lastName":"last1","profilePicture":null,"about":null,"userLanguage":[]}
+  // ex: {"id":55,"email":"test1@gmail.com","firstName":"first1","lastName":"last1","profilePicture":null,"about":null,"userLanguage":[],"clientTotalThumbsUp":2,"clientTotalThumbsDown":0,"interpreterTotalThumbsUp":4,"interpreterTotalThumbsDown":1}
 
+// Modify user information
 app.put('/user', userController.updateUserInfo);
   // to access: http://localhost:8080/user
   // this path will update user info
