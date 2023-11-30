@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 // MODEL FUNCTIONS
 export default {
-    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationName, appointmentDateTime, appointmentNote }: AppointmentCreate) {
+    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate) {
         await prisma.appointment.create({
             data: {
                 appointmentTitle: appointmentTitle,
@@ -16,9 +16,10 @@ export default {
                 clientUserId: clientUserId,
                 clientSpokenLanguage: clientSpokenLanguage,
                 interpreterSpokenLanguage: interpreterSpokenLanguage,
+                locationName: locationName,
+                locationAddress: locationAddress,
                 locationLatitude: locationLatitude,
                 locationLongitude: locationLongitude,
-                locationName: locationName,
             }
         });
     },
@@ -73,14 +74,15 @@ export default {
                     }
                 },
                 interpreterSpokenLanguage: true,
+                locationName: true,
+                locationAddress: true,
                 locationLatitude: true,
                 locationLongitude: true,
-                locationName: true,
                 appointmentDateTime: true,
                 appointmentNote: true,
-                reviewClientRating: true,
+                reviewClientThumb: true,
                 reviewClientNote: true,
-                reviewInterpreterRating: true,
+                reviewInterpreterThumb: true,
                 reviewInterpreterNote: true,
             },
             where: {
@@ -146,13 +148,13 @@ export default {
         });
     },
 
-    async addReview({ appointmentId, role, reviewRating, reviewNote }: ReviewAdd ) {
+    async addReview({ appointmentId, role, reviewThumb, reviewNote }: ReviewAdd ) {
         await prisma.appointment.update({
             where: {
                 id: appointmentId,
             },
             data: {
-                ...(role === 'client' ? {reviewClientRating: reviewRating} : {reviewInterpreterRating: reviewRating}),
+                ...(role === 'client' ? {reviewClientThumb: reviewThumb} : {reviewInterpreterThumb: reviewThumb}),
                 ...(role === 'client' ? {reviewClientNote: reviewNote} : {reviewInterpreterNote: reviewNote}),
             }
         });
