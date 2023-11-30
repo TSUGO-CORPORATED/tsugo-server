@@ -54,10 +54,27 @@ export default {
       const uid: string = req.params.uid;
       const data: UserGetDetail | null = await userModel.getUserDetail(uid);
 
-      const clientThumbs = await appointmentModel.calcTotalThumb(data?.id, 'client');
+      if (data) {
+        const clientThumbs = await appointmentModel.calcTotalThumbsClient(data?.id);
+        const clientTotalThumbsUp1 = clientThumbs.find(x => x.reviewClientThumb === true);
+        const clientTotalThumbsUp2 = clientTotalThumbsUp1 ? clientTotalThumbsUp1['_count'] : 0;
+        const clientTotalThumbsDown1 = clientThumbs.find(x => x.reviewClientThumb === false);
+        const clientTotalThumbsDown2 = clientTotalThumbsDown1 ? clientTotalThumbsDown1['_count'] : 0;
 
-      const sentData = clientThumbs;
-      res.status(200).send(JSON.stringify(sentData));
+        const interpreterThumbs = await appointmentModel.calcTotalThumbsInterpreter(data?.id);
+        const interpreterTotalThumbsUp1 = interpreterThumbs.find(x => x.reviewInterpreterThumb === true);
+        const interpreterTotalThumbsUp2 = interpreterTotalThumbsUp1 ? interpreterTotalThumbsUp1['_count'] : 0;
+        const interpreterTotalThumbsDown1 = interpreterThumbs.find(x => x.reviewInterpreterThumb === false);
+        const interpreterTotalThumbsDown2 = interpreterTotalThumbsDown1 ? interpreterTotalThumbsDown1['_count'] : 0;
+  
+        data["clientTotalThumbsUp"] = clientTotalThumbsUp2;
+        data["clientTotalThumbsDown"] = clientTotalThumbsDown2;
+        data["interpreterTotalThumbsUp"] = interpreterTotalThumbsUp2;
+        data["interpreterTotalThumbsDown"] = interpreterTotalThumbsDown2;
+      }
+
+
+      res.status(200).send(JSON.stringify(data));
     } catch {
       res.status(500).send("Failed to get user detail");
     }
