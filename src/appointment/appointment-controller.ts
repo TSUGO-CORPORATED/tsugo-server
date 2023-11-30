@@ -1,16 +1,28 @@
 import { Request, Response } from "express";
 import appointmentModel from "./appointment-model";
-import { AppointmentCreate, AppointmentOverview, AppointmentDetail, ReviewAdd } from "../globals";
+import { AppointmentCreate, AppointmentOverview, AppointmentDetail, ReviewAdd, AppointmentUpdate } from "../globals";
 
 export default {
     async createAppointment(req: Request, res: Response): Promise<void> {
         try {
             // Decontructing data received
             const { appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
-            await appointmentModel.createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationLatitude, locationLongitude, locationName, appointmentDateTime, appointmentNote });
+            await appointmentModel.createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote });
             res.status(201).send("Appointment created in backend database");
         } catch {
             res.status(401).send("Cannot create new appointment");
+        }
+    },
+
+    async updateAppointment(req: Request, res: Response): Promise<void> {
+        try {
+            // Decontructing data received
+            const { id, appointmentTitle, appointmentType, appointmentDateTime, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentNote }: AppointmentUpdate = req.body;
+            await appointmentModel.updateAppointment({ id, appointmentTitle, appointmentType, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote });
+            
+            res.status(200).send(JSON.stringify("Appointment data updated"));
+        } catch {
+            res.status(500).send("Failed to update appointment");
         }
     },
 
