@@ -46,12 +46,13 @@ model Appointment {
   interpreterUser           User?     @relation("interpreterUser", fields: [interpreterUserId], references: [id])
   interpreterUserId         Int?
   interpreterSpokenLanguage String    @db.VarChar(50)
+  locationName              String?   @db.VarChar(255)
+  locationAddress           String?   @db.VarChar(255)
   locationLatitude          Decimal?
   locationLongitude         Decimal?
-  locationName          String?       @db.VarChar(255)
-  reviewClientRating        Int?      @db.SmallInt
+  reviewClientThumb         Boolean?
   reviewClientNote          String?
-  reviewInterpreterRating   Int?      @db.SmallInt
+  reviewInterpreterThumb    Boolean?
   reviewInterpreterNote     String?
   message                   Message[]
 }
