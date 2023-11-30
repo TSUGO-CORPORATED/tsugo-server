@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { AppointmentOverview, AppointmentCreate, AppointmentDetail, ReviewAdd } from '../globals';
+import { AppointmentOverview, AppointmentCreate, AppointmentUpdate, AppointmentDetail, ReviewAdd } from '../globals';
 
 const prisma = new PrismaClient();
 
@@ -14,6 +14,26 @@ export default {
                 appointmentNote: appointmentNote,
                 status: "Requested",
                 clientUserId: clientUserId,
+                clientSpokenLanguage: clientSpokenLanguage,
+                interpreterSpokenLanguage: interpreterSpokenLanguage,
+                locationName: locationName,
+                locationAddress: locationAddress,
+                locationLatitude: locationLatitude,
+                locationLongitude: locationLongitude,
+            }
+        });
+    },
+
+    async updateAppointment({ id, appointmentTitle, appointmentType, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentUpdate) {
+        await prisma.appointment.update({
+            where: {
+                id: id,
+            },
+            data: {
+                appointmentTitle: appointmentTitle,
+                appointmentType: appointmentType,
+                appointmentDateTime: appointmentDateTime,
+                appointmentNote: appointmentNote,
                 clientSpokenLanguage: clientSpokenLanguage,
                 interpreterSpokenLanguage: interpreterSpokenLanguage,
                 locationName: locationName,
