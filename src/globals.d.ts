@@ -36,6 +36,10 @@ export interface UserGetDetail {
   profilePicture: Buffer | null;
   about: string | null;
   userLanguage: UserGetDetailLanguage[];
+  clientTotalThumbsUp?: number;
+  clientTotalThumbsDown?: number;
+  interpreterTotalThumbsUp?: number;
+  interpreterTotalThumbsDown?: number;
 }
 
 export interface Language {
