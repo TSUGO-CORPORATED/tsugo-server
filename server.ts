@@ -5,8 +5,7 @@ import dotenv from "dotenv";
 import { Socket } from "socket.io";
 import http from "http";
 import { Server } from "socket.io";
-// const http = require("http");
-// const {Server} = require("socket.io");
+import { ExpressPeerServer } from 'peer';
 
 // CONFIGURE MODULES
 const app: Express = express();
@@ -15,6 +14,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {origin: "*"}
 });
+const peerServer = ExpressPeerServer(server, {});
+app.use('/peerjs', peerServer);
 
 // USING MIDDLEWARE
 app.use(express.json());
