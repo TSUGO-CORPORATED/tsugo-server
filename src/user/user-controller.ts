@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
 import { UserCreate, UserCreated, UserGet, UserGetDetail, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import appointmentModel from "../appointment/appointment-model";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -52,6 +53,26 @@ export default {
     try {
       const uid: string = req.params.uid;
       const data: UserGetDetail | null = await userModel.getUserDetail(uid);
+
+      if (data) {
+        const clientThumbs = await appointmentModel.calcTotalThumbsClient(data?.id);
+        const clientTotalThumbsUp1 = clientThumbs.find(x => x.reviewClientThumb === true);
+        const clientTotalThumbsUp2 = clientTotalThumbsUp1 ? clientTotalThumbsUp1['_count'] : 0;
+        const clientTotalThumbsDown1 = clientThumbs.find(x => x.reviewClientThumb === false);
+        const clientTotalThumbsDown2 = clientTotalThumbsDown1 ? clientTotalThumbsDown1['_count'] : 0;
+
+        const interpreterThumbs = await appointmentModel.calcTotalThumbsInterpreter(data?.id);
+        const interpreterTotalThumbsUp1 = interpreterThumbs.find(x => x.reviewInterpreterThumb === true);
+        const interpreterTotalThumbsUp2 = interpreterTotalThumbsUp1 ? interpreterTotalThumbsUp1['_count'] : 0;
+        const interpreterTotalThumbsDown1 = interpreterThumbs.find(x => x.reviewInterpreterThumb === false);
+        const interpreterTotalThumbsDown2 = interpreterTotalThumbsDown1 ? interpreterTotalThumbsDown1['_count'] : 0;
+  
+        data["clientTotalThumbsUp"] = clientTotalThumbsUp2;
+        data["clientTotalThumbsDown"] = clientTotalThumbsDown2;
+        data["interpreterTotalThumbsUp"] = interpreterTotalThumbsUp2;
+        data["interpreterTotalThumbsDown"] = interpreterTotalThumbsDown2;
+      }
+
 
       res.status(200).send(JSON.stringify(data));
     } catch {

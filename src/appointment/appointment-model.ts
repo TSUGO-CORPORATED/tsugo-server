@@ -179,4 +179,28 @@ export default {
             }
         });
     },
+
+    async calcTotalThumbsClient(userId: number | undefined) {
+        const data = await prisma.appointment.groupBy({
+            by: ['reviewClientThumb'],
+            _count: true,
+            where: {
+                clientUserId: userId,
+                reviewClientThumb: {not: null},
+            },
+        })
+        return data;
+    },
+
+    async calcTotalThumbsInterpreter(userId: number | undefined) {
+        const data = await prisma.appointment.groupBy({
+            by: ['reviewInterpreterThumb'],
+            _count: true,
+            where: {
+                interpreterUserId: userId,
+                reviewInterpreterThumb: {not: null},
+            },
+        })
+        return data;
+    },
 }
