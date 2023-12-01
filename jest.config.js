@@ -2,5 +2,5 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  types: "jest"
+  types: ["jest", "node"]
 };
