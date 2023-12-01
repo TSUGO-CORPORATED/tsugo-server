@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-import { UserCreate, UserCreated, UserGet, UserGetDetail, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import { UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 import appointmentModel from "../appointment/appointment-model";
 
 // CONTROLLER FUNCTIONS
@@ -16,21 +16,22 @@ export default {
       
       // Registering user language to database
         // currently only run if language is being registered, subject to change
-      if (req.body.languages) {
-        const languages: Language[] = req.body.languages;
-        console.log(languages);
-        const userLanguage: UserLanguage[] = [];
-        for (const language of languages) {
-          userLanguage.push({
-            userId: userCreated.id,
-            language: language.language,
-            proficiency: language.proficiency,
-            certifications: language.certifications,
-          })
-        }
-        console.log(userLanguage);
-        userModel.addLanguages(userLanguage);
-      }
+        // this feature is deactivated for now
+      // if (req.body.languages) {
+      //   const languages: Language[] = req.body.languages;
+      //   console.log(languages);
+      //   const userLanguage: UserLanguage[] = [];
+      //   for (const language of languages) {
+      //     userLanguage.push({
+      //       userId: userCreated.id,
+      //       language: language.language,
+      //       proficiency: language.proficiency,
+      //       certifications: language.certifications,
+      //     })
+      //   }
+      //   console.log(userLanguage);
+      //   userModel.addLanguages(userLanguage);
+      // }
 
       res.status(201).send("User created in backend database");
     } catch {
