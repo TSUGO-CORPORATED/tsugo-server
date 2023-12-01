@@ -71,6 +71,9 @@ app.post('/user', userController.createUser);
   // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
   // the language must be in an array containing objects
 
+// Check user record
+app.get('/user/check/:email', userController.checkUser);
+
 // Get user basic information
 app.get('/user/:uid', userController.getUser);
   // to access: http://localhost:8080/user/testuid

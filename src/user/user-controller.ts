@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-import { UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import { UserCheck, UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 import appointmentModel from "../appointment/appointment-model";
 
 // CONTROLLER FUNCTIONS
@@ -39,9 +39,24 @@ export default {
     }
   },
 
+  async checkUser(req: Request, res: Response): Promise<void> {
+    try {
+      const email: string = req.params.email;
+
+      // Check for user, if available return true, otherwise false
+      const data: UserCheck | null = await userModel.checkUser(email);
+      let check: boolean = false;
+      if (data) check = true;
+
+      res.status(200).send(JSON.stringify(check));
+    } catch {
+      res.status(500).send("Failed to get user");
+    }
+  },
+
   async getUser(req: Request, res: Response): Promise<void> {
     try {
-      const uid: string = req.params.uid
+      const uid: string = req.params.uid;
       const data: UserGet | null = await userModel.getUser(uid);
 
       res.status(200).send(JSON.stringify(data));

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { UserCreate, UserLanguage, UserCreated, UserGet, UserGetDetail, UserUpdateInfo2, UserUpdateLanguage2 } from '../globals';
+import { UserCreate, UserLanguage, UserCreated, UserGet, UserGetDetail, UserUpdateInfo2, UserUpdateLanguage2, UserCheck } from '../globals';
 
 const prisma = new PrismaClient();
 
@@ -22,6 +22,19 @@ export default {
     await prisma.userLanguage.createMany({
       data: userLanguage,
     });
+  },
+
+  async checkUser(email: string) {
+    const data: UserCheck | null = await prisma.user.findFirst({
+      select: {
+        id: true,
+      },
+      where: {
+        email: email,
+      }
+    });
+
+    return data;
   },
 
   async getUser(uid: string) {        
