@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { type AddressInfo } from "node:net";
 import { io as ioc, type Socket as ClientSocket } from "socket.io-client";
 import { Server, type Socket as ServerSocket } from "socket.io";
-import '@types/jest';
+
 
 function waitFor(socket: ServerSocket | ClientSocket, event: string) {
   return new Promise((resolve) => {
