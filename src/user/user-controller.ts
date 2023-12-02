@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import userModel from "./user-model";
 import { UserCheck, UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 import appointmentModel from "../appointment/appointment-model";
+import { Language, UserLanguage } from "../globals";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -17,21 +18,21 @@ export default {
       // Registering user language to database
         // currently only run if language is being registered, subject to change
         // this feature is deactivated for now
-      // if (req.body.languages) {
-      //   const languages: Language[] = req.body.languages;
-      //   console.log(languages);
-      //   const userLanguage: UserLanguage[] = [];
-      //   for (const language of languages) {
-      //     userLanguage.push({
-      //       userId: userCreated.id,
-      //       language: language.language,
-      //       proficiency: language.proficiency,
-      //       certifications: language.certifications,
-      //     })
-      //   }
-      //   console.log(userLanguage);
-      //   userModel.addLanguages(userLanguage);
-      // }
+      if (req.body.languages) {
+        const languages: Language[] = req.body.languages;
+        console.log(languages);
+        const userLanguage: UserLanguage[] = [];
+        for (const language of languages) {
+          userLanguage.push({
+            userId: userCreated.id,
+            language: language.language,
+            proficiency: language.proficiency,
+            certifications: language.certifications,
+          })
+        }
+        console.log(userLanguage);
+        userModel.addLanguages(userLanguage);
+      }
 
       res.status(201).send("User created in backend database");
     } catch {
@@ -121,6 +122,20 @@ export default {
       res.status(200).send(JSON.stringify("User info updated"));
     } catch {
       res.status(500).send("Failed to update user");
+    }
+  },
+
+  async deleteUser(req: Request, res: Response): Promise<void> {
+    try {
+      const uid: string = req.params.uid;
+
+      const userId: number = await userModel.deleteUserUpdateUserInfo(uid); 
+      await userModel.deleteUserDeleteUserLanguage(userId); 
+      await userModel.deleteUserUpdateMessage(userId); 
+      
+      res.status(204).send();
+    } catch {
+      res.status(202).send("Failed to delete user");
     }
   },
 };

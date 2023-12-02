@@ -25,7 +25,7 @@ export default {
   },
 
   async checkUser(email: string) {
-    const data: UserCheck | null = await prisma.user.findFirst({
+    const data: UserCheck | null = await prisma.user.findUnique({
       select: {
         id: true,
       },
@@ -38,7 +38,7 @@ export default {
   },
 
   async getUser(uid: string) {        
-    const data: UserGet | null = await prisma.user.findFirst({
+    const data: UserGet | null = await prisma.user.findUnique({
       where: {
         uid: uid,
       },
@@ -53,7 +53,7 @@ export default {
   },
 
   async getUserDetail(uid: string) {
-    const data: UserGetDetail | null = await prisma.user.findFirst({
+    const data: UserGetDetail | null = await prisma.user.findUnique({
       where: {
         uid: uid,
       },
@@ -109,4 +109,41 @@ export default {
       },
     });
   },
+
+  async deleteUserUpdateUserInfo(uid: string) {
+    const data: {id: number} = await prisma.user.update({
+      select: {
+        id: true,
+      },
+      where: {
+        uid: uid,
+      },
+      data: {
+        email: `Deleted user ${uid}`,
+        firstName: 'Deleted user',
+        lastName: 'Deleted user',
+        about: 'Deleted user',
+      },
+    });
+    return data.id;
+  },
+
+  async deleteUserDeleteUserLanguage(userId: number) {
+    await prisma.userLanguage.deleteMany({
+      where: {
+        userId: userId,
+      },
+    })
+  },
+
+  async deleteUserUpdateMessage(userId: number) {
+    await prisma.message.updateMany({
+      where: {
+        userId: userId,
+      },
+      data: {
+        content: "Deleted user"
+      }
+    })
+  }
 };
