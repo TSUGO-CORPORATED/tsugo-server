@@ -7,6 +7,11 @@ import http from "http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from 'peer';
 
+// IMPORTING DATABASE CONTROLLER
+import userController from "./src/user/user-controller";
+import appointmentController from "./src/appointment/appointment-controller";
+import messageController from "./src/message/message-controller";
+
 // CONFIGURE MODULES
 const app: Express = express();
 dotenv.config({path: "./.env"}); 
@@ -54,11 +59,7 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-// IMPORTING DATABASE CONTROLLER
-import userController from "./src/user/user-controller";
-import appointmentController from "./src/appointment/appointment-controller";
-import messageController from "./src/message/message-controller";
-
+// ENDPOINTS
 // Test
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript (AND WEBSOCKETS :)) Server, Yo! Hello');
@@ -71,6 +72,9 @@ app.post('/user', userController.createUser);
   // this path will create a new user
   // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
   // the language must be in an array containing objects
+
+// Check user record
+app.get('/user/check/:email', userController.checkUser);
 
 // Get user basic information
 app.get('/user/:uid', userController.getUser);
@@ -94,6 +98,15 @@ app.put('/user', userController.updateUserInfo);
   // body content: {"userId": 63, "uid":"testuid", "firstName": "firstname", "lastName": "lastname", "about": "testabout", "languages": [{"id": 6, "language": "English", "proficiency": "conversational"}, {"language": "Japan", "proficiency":"native"}]}
   // in the case wehre new language is added, the id of the language should be left blank
   // about is optional
+  // will not return anything, just text
+
+// Delete user
+app.delete('/user/:uid', userController.deleteUser);
+  // to access: http://localhost:8080/user/testuid
+  // this path will:
+    // modify user email, firstname, lastname, about to 'Deleted user'
+    // delete all registered user language associated with that user
+    // modify all user message content to just 'Deleted user'. Note that the message id and timestamp will still exist
   // will not return anything, just text
 
 // Appointment

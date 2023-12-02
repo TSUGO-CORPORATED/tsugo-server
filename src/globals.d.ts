@@ -21,6 +21,10 @@ export interface UserGet {
   lastName: string,
 }
 
+export interface UserCheck {
+  id: number
+}
+
 export interface UserGetDetailLanguage {
   id: number,
   language: string,
