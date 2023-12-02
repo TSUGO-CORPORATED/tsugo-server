@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import userModel from "./user-model";
-import { UserCreate, UserCreated, UserGet, UserGetDetail, Language, UserLanguage, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
+import { UserCheck, UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateLanguage, UserUpdateLanguage2 } from "../globals";
 import appointmentModel from "../appointment/appointment-model";
+import { Language, UserLanguage } from "../globals";
 
 // CONTROLLER FUNCTIONS
 export default {
@@ -16,6 +17,7 @@ export default {
       
       // Registering user language to database
         // currently only run if language is being registered, subject to change
+        // this feature is deactivated for now
       if (req.body.languages) {
         const languages: Language[] = req.body.languages;
         console.log(languages);
@@ -38,9 +40,24 @@ export default {
     }
   },
 
+  async checkUser(req: Request, res: Response): Promise<void> {
+    try {
+      const email: string = req.params.email;
+
+      // Check for user, if available return true, otherwise false
+      const data: UserCheck | null = await userModel.checkUser(email);
+      let check: boolean = false;
+      if (data) check = true;
+
+      res.status(200).send(JSON.stringify(check));
+    } catch {
+      res.status(500).send("Failed to get user");
+    }
+  },
+
   async getUser(req: Request, res: Response): Promise<void> {
     try {
-      const uid: string = req.params.uid
+      const uid: string = req.params.uid;
       const data: UserGet | null = await userModel.getUser(uid);
 
       res.status(200).send(JSON.stringify(data));
@@ -105,6 +122,20 @@ export default {
       res.status(200).send(JSON.stringify("User info updated"));
     } catch {
       res.status(500).send("Failed to update user");
+    }
+  },
+
+  async deleteUser(req: Request, res: Response): Promise<void> {
+    try {
+      const uid: string = req.params.uid;
+
+      const userId: number = await userModel.deleteUserUpdateUserInfo(uid); 
+      await userModel.deleteUserDeleteUserLanguage(userId); 
+      await userModel.deleteUserUpdateMessage(userId); 
+      
+      res.status(204).send();
+    } catch {
+      res.status(202).send("Failed to delete user");
     }
   },
 };
