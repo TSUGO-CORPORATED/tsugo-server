@@ -52,7 +52,12 @@ io.on("connection", (socket: Socket) => {
   socket.on("DISCONNECT_ROOM", async (msg) => {
     let parsedMessage = await JSON.parse(msg);
     socket.leave(parsedMessage.room);
-  })
+  });
+
+  socket.on('video-join', (userId) => {
+    const userRoom = [...socket.rooms.values()];
+    io.to(userRoom[1]).emit('connect-user', userId);
+  });
 
   socket.on("disconnect", () => {
     console.log("a user disconnected");
