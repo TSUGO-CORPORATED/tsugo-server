@@ -44,6 +44,22 @@ export default {
         });
     },
 
+    async findExpiredAppointment() {
+        const data = await prisma.appointment.findMany({
+            select: {
+                id: true,
+            },
+            where: {
+                status: "Requested",
+                appointmentDateTime: {
+                    lte: new Date(),
+                }
+            }
+        })
+
+        return data;
+    },
+
     async findAppointment(userId: number) {
         const data: AppointmentOverview[] = await prisma.appointment.findMany({
             select: {
@@ -63,7 +79,12 @@ export default {
                 NOT: {
                     clientUserId: userId,
                 }
-            }
+            },
+            orderBy: [
+                {
+                    appointmentDateTime: 'asc'
+                }
+            ],
         });
 
         return data;
@@ -130,6 +151,11 @@ export default {
                 ...(role === 'client' ? {clientUserId: userId} : {interpreterUserId: userId}),
                 status: { in: status},
             },
+            orderBy: [
+                {
+                    appointmentDateTime: 'asc'
+                }
+            ],
         });
         return data;
     },
