@@ -75,8 +75,9 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/user', userController.createUser);
   // to access: http://localhost:8080/user
   // this path will create a new user
-  // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
-  // the language must be in an array containing objects
+  // Language is inactive right now
+    // body content: {"uid": "testuid", "email": "testemail8", "firstName": "firstname", "lastName": "lastname", "languages": [{"language": "English", "proficiency": "conversational"}, {"language": "Japanese", "proficiency": "native"}]}
+    // the language must be in an array containing objects
 
 // Check user record
 app.get('/user/check/:email', userController.checkUser);

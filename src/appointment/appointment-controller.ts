@@ -2,12 +2,23 @@ import { Request, Response } from "express";
 import appointmentModel from "./appointment-model";
 import { AppointmentCreate, AppointmentOverview, AppointmentDetail, ReviewAdd, AppointmentUpdate } from "../globals";
 
+async function removeExpiredAppointment() {
+    const findExpiredAppointment: {id: number}[] = await appointmentModel.findExpiredAppointment();
+    if (findExpiredAppointment.length) {
+        for (const appointment of findExpiredAppointment) {
+            await appointmentModel.cancelAppointment(appointment.id);
+        }
+    }
+    return;
+}
+
 export default {
     async createAppointment(req: Request, res: Response): Promise<void> {
         try {
             // Decontructing data received
             const { appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate = req.body;
             await appointmentModel.createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote });
+            
             res.status(201).send("Appointment created in backend database");
         } catch {
             res.status(401).send("Cannot create new appointment");
@@ -28,8 +39,13 @@ export default {
 
     async findAppointment(req: Request, res: Response): Promise<void> {
         try {
+            // Taking userId of the requesting user. This id will be used to exclude appointment made by that user
             const userId: number = Number(req.params.userId);
 
+            // Removing expired appointment
+            removeExpiredAppointment();
+
+            // Getting appointment
             const data: AppointmentOverview[] = await appointmentModel.findAppointment(userId);
 
             res.status(200).send(JSON.stringify(data));
@@ -52,16 +68,22 @@ export default {
 
     async getAppointmentOverview(req: Request, res: Response): Promise<void> {
         try {
+            // Taking request data
             const role: string = req.params.role;
             const timeframe: string = req.params.timeframe; 
             const userId: number = Number(req.params.userId);
 
+            // Set the status that is going to be used based on timeframe and role
             let status: string[] = [];
             if (timeframe === 'current' && role === 'client') status = ["Requested", "Accepted"];
             else if (timeframe === 'history' && role === 'client') status = ["Completed", "Cancelled"];
             else if (timeframe === 'current' && role === 'interpreter') status = ["Accepted"];
             else if (timeframe === 'history' && role === 'interpreter') status = ["Completed", "Cancelled"];
 
+            // Removing expired appointment
+            await removeExpiredAppointment();
+
+            // Getting data
             const data: AppointmentOverview[] = await appointmentModel.getAppointmentOverview(role, userId, status);
 
             res.status(200).send(JSON.stringify(data));
