@@ -10,29 +10,30 @@ export default {
     try {
       // Deconstructing data received
       const { uid, email, firstName, lastName }: UserCreate = req.body;
+      console.log(uid, email, firstName, lastName)
       
       // Registering user data to database
       const userCreated: UserCreated = await userModel.createUser({ uid, email, firstName, lastName });
-      console.log(userCreated);
+      // console.log(userCreated);
       
       // Registering user language to database
         // currently only run if language is being registered, subject to change
         // this feature is deactivated for now
-      if (req.body.languages) {
-        const languages: Language[] = req.body.languages;
-        console.log(languages);
-        const userLanguage: UserLanguage[] = [];
-        for (const language of languages) {
-          userLanguage.push({
-            userId: userCreated.id,
-            language: language.language,
-            proficiency: language.proficiency,
-            certifications: language.certifications,
-          })
-        }
-        console.log(userLanguage);
-        userModel.addLanguages(userLanguage);
-      }
+      // if (req.body.languages) {
+      //   const languages: Language[] = req.body.languages;
+      //   console.log(languages);
+      //   const userLanguage: UserLanguage[] = [];
+      //   for (const language of languages) {
+      //     userLanguage.push({
+      //       userId: userCreated.id,
+      //       language: language.language,
+      //       proficiency: language.proficiency,
+      //       certifications: language.certifications,
+      //     })
+      //   }
+      //   // console.log(userLanguage);
+      //   userModel.addLanguages(userLanguage);
+      // }
 
       res.status(201).send("User created in backend database");
     } catch {
