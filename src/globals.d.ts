@@ -94,6 +94,8 @@ export interface AppointmentCreate {
   appointmentType: string,
   clientUserId: number,
   clientSpokenLanguage: string,
+  mainCategory: string | null,
+  subCategory: string | null,
   interpreterSpokenLanguage: string,
   locationName?: string | null,
   locationAddress?: string | null,
@@ -107,6 +109,8 @@ export interface AppointmentUpdate {
   id: number;
   appointmentTitle: string,
   appointmentType: string,
+  mainCategory: string | null,
+  subCategory: string | null,
   clientSpokenLanguage: string,
   interpreterSpokenLanguage: string,
   locationName?: string | null,
@@ -122,6 +126,8 @@ export interface AppointmentOverview {
   status: string;
   appointmentTitle: string,
   appointmentType: string,
+  mainCategory: string | null,
+  subCategory: string | null,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
   locationName: string | null;
@@ -134,6 +140,8 @@ export interface AppointmentDetail {
   id: number;
   appointmentTitle: string,
   appointmentType: string,
+  mainCategory: string | null,
+  subCategory: string | null,
   clientSpokenLanguage: string;
   interpreterSpokenLanguage: string;
   locationName: string | null;

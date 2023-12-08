@@ -5,13 +5,15 @@ const prisma = new PrismaClient();
 
 // MODEL FUNCTIONS
 export default {
-    async createAppointment({ appointmentTitle, appointmentType, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate) {
+    async createAppointment({ appointmentTitle, appointmentType, mainCategory, subCategory, clientUserId, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentCreate) {
         await prisma.appointment.create({
             data: {
                 appointmentTitle: appointmentTitle,
                 appointmentType: appointmentType,
                 appointmentDateTime: appointmentDateTime,
                 appointmentNote: appointmentNote,
+                mainCategory: mainCategory,
+                subCategory: subCategory,
                 status: "Requested",
                 clientUserId: clientUserId,
                 clientSpokenLanguage: clientSpokenLanguage,
@@ -24,7 +26,7 @@ export default {
         });
     },
 
-    async updateAppointment({ id, appointmentTitle, appointmentType, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentUpdate) {
+    async updateAppointment({ id, appointmentTitle, appointmentType, mainCategory, subCategory, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentUpdate) {
         await prisma.appointment.update({
             where: {
                 id: id,
@@ -32,6 +34,8 @@ export default {
             data: {
                 appointmentTitle: appointmentTitle,
                 appointmentType: appointmentType,
+                mainCategory: mainCategory,
+                subCategory: subCategory,
                 appointmentDateTime: appointmentDateTime,
                 appointmentNote: appointmentNote,
                 clientSpokenLanguage: clientSpokenLanguage,
@@ -68,6 +72,8 @@ export default {
                 appointmentTitle: true,
                 appointmentType: true,
                 appointmentDateTime: true,
+                mainCategory: true,
+                subCategory: true,
                 locationName: true,
                 locationLatitude: true,
                 locationLongitude: true,
@@ -97,6 +103,8 @@ export default {
                 status: true,
                 appointmentTitle: true,
                 appointmentType: true,
+                mainCategory: true,
+                subCategory: true,
                 clientUserId: true,
                 clientUser: {
                     select: {
@@ -140,6 +148,8 @@ export default {
                 status: true,
                 appointmentTitle: true,
                 appointmentType: true,
+                mainCategory: true,
+                subCategory: true,
                 clientSpokenLanguage: true,
                 interpreterSpokenLanguage: true,
                 locationName: true,

@@ -40,6 +40,8 @@ model Appointment {
   appointmentType           String    @db.VarChar(50)
   appointmentDateTime       DateTime
   appointmentNote           String?
+  mainCategory              String?   @db.VarChar(50) 
+  subCategory               String?   @db.VarChar(50)            
   clientUser                User      @relation("clientUser", fields: [clientUserId], references: [id])
   clientUserId              Int
   clientSpokenLanguage      String    @db.VarChar(50)
