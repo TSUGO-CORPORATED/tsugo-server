@@ -56,7 +56,7 @@ io.on("connection", (socket: Socket) => {
 
   socket.on('video-join', (userId) => {
     const userRoom = [...socket.rooms.values()];
-    io.to(userRoom[1]).emit('connect-user', userId);
+    socket.to(userRoom[1]).emit('connect-user', userId);
   });
 
   socket.on("disconnect", () => {
