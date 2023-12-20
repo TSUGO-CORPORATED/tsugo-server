@@ -10,7 +10,7 @@ export default {
     try {
       // Deconstructing data received
       const { uid, email, firstName, lastName }: UserCreate = req.body;
-      console.log(uid, email, firstName, lastName)
+      // console.log(uid, email, firstName, lastName);
       
       // Registering user data to database
       const userCreated: UserCreated = await userModel.createUser({ uid, email, firstName, lastName });
