@@ -4,9 +4,8 @@ import express, { Express } from 'express';
 import router from '../routes';
 import cors from "cors";
 import { PrismaClient } from '@prisma/client';
-import { UserCreate, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateInfo2 } from '../globals';
-import { create } from 'domain';
-
+import { AppointmentCreate, UserCreate, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateInfo2 } from '../globals';
+import { Decimal, DecimalJsLike } from '@prisma/client/runtime/library';
 
 // INITIATING PRISMA
 const prisma = new PrismaClient();
@@ -26,6 +25,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/', router);
 
+
 // TESTING FOR SERVER AVAILABILITY
 describe('Server', function () {
   test('responds to /', async () => {
@@ -39,18 +39,18 @@ describe('Server', function () {
 
 // TESTING FOR USER PATH
 describe('User', function () {
-  let userFixture: UserCreate | null;
-
   // Before each, insert data
   beforeEach(async () => {
-    userFixture = createUser;
-    await request(app)
-      .post('/user')
-      .send(createUser)
-      .then((result) => {
-        // console.log("inserted test customer");
-      })
-      .catch(console.error);
+    // await request(app)
+    //   .post('/user')
+    //   .send(createUser)
+    //   .then((result) => {
+    //     // console.log("inserted test customer");
+    //   })
+    //   .catch(console.error);
+    await prisma.user.create({
+      data: createUser,
+    });
   });
 
   // After each, remove data
@@ -77,7 +77,7 @@ describe('User', function () {
       });
     });
 
-   describe('When user does not exist', () => {
+    describe('When user does not exist', () => {
       test('should return false', async () => {
         const res: Response = await request(app)
           .get('/user/check/randomemail');
@@ -85,7 +85,7 @@ describe('User', function () {
         expect(res.statusCode).toBe(200);
         expect(check).toBe(false);
       })
-   });
+    });
   });
   
   describe('Get user basic info', () => {
