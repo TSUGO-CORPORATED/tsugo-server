@@ -4,7 +4,6 @@ import express, { Express } from 'express';
 import router from '../routes';
 import cors from "cors";
 import { PrismaClient } from '@prisma/client';
-import { UserCreate, UserLanguage, UserCreated, UserGet, UserGetDetail, UserUpdateInfo2, UserUpdateLanguage2, UserCheck } from '../globals';
 
 
 // INITIATING PRISMA
@@ -74,7 +73,35 @@ describe('User', function () {
     }
   });
 
-  describe('Create User', () => {
+  describe('Check user', () => {
+    describe('When user exist', () => {
+      it('should return true', async () => {
+        const res = await request(app)
+          .get(`/user/check/${createUser.email}`)
+        expect(res.statusCode).toBe(200);
+        expect(res.text).toBe('true');
+      });
+    });
+
+   describe('When user does not exist', () => {
+      it('should return an empty object', async () => {
+        const res = await request(app)
+          .get('/user/check/randomemail')
+        expect(res.statusCode).toBe(200);
+        expect(res.text).toBe('false');
+      })
+   });
+  });
+  
+  describe('Get User', () => {
+    describe('When user exist', async () => {
+
+    });
+
+    
+  });
+
+  describe('Create user', () => {
     afterAll( async () => {
       try {
         await prisma.user.delete({
@@ -115,6 +142,6 @@ describe('User', function () {
       expect(data).toEqual(newUser);
     });
   });
-});
 
-// console.log(fixtures.getUser());
+
+});
