@@ -31,7 +31,7 @@ export default {
             const { id, appointmentTitle, appointmentType, mainCategory, subCategory, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote }: AppointmentUpdate = req.body;
             await appointmentModel.updateAppointment({ id, appointmentTitle, appointmentType, mainCategory, subCategory, clientSpokenLanguage, interpreterSpokenLanguage, locationName, locationAddress, locationLatitude, locationLongitude, appointmentDateTime, appointmentNote });
             
-            res.status(200).send(JSON.stringify("Appointment data updated"));
+            res.status(200).send("Appointment data updated");
         } catch {
             res.status(500).send("Failed to update appointment");
         }

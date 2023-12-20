@@ -29,6 +29,10 @@ router.post('/user', userController.createUser);
 
 // Check user record
 router.get('/user/check/:email', userController.checkUser);
+// to access: http://localhost:8080/user/check/testemail
+// this path will check if user exist
+// will return an object containing userId;
+// ex: {"id":55}
 
 // Get user basic information
 router.get('/user/:uid', userController.getUser);
