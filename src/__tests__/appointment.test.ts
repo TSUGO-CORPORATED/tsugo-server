@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import router from '../routes';
 import cors from "cors";
 import { PrismaClient } from '@prisma/client';
-import { AppointmentCreate, AppointmentDetail, AppointmentOverview, UserCreate, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateInfo2 } from '../globals';
+import { AppointmentCreate, AppointmentDetail, AppointmentOverview, UserCreate, UserCreated, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateInfo2 } from '../globals';
 import { Decimal, DecimalJsLike } from '@prisma/client/runtime/library';
 
 // INITIATING PRISMA
@@ -47,21 +47,18 @@ interface AppointmentReturnTest {
 }
 
 // SEED DATA
-const createAppointment: AppointmentCreateTest = {
-  appointmentTitle: "review test",
-  appointmentType: "In-person",
-  mainCategory: "Business", 
-  subCategory: "sub-business",
-  status: 'Requested',
-  clientUserId: 68,
-  clientSpokenLanguage: "English",
-  interpreterSpokenLanguage: "Japanese",
-  locationName: "Code Chrysalis",
-  locationAddress: "test address",
-  locationLatitude: 123124,
-  locationLongitude: 4548237,
-  appointmentDateTime: "2023-12-25T10:29:02.366Z",
-  appointmentNote: "test3"
+const createUserClient: UserCreate = {
+  uid: 'testuid1555',
+  email: 'testemail1555',
+  firstName: 'testfirstname1000',
+  lastName: 'testLastName1000'
+}
+
+const createUserInterpreter: UserCreate = {
+  uid: 'testuid1566',
+  email: 'testemail1566',
+  firstName: 'testfirstname1000',
+  lastName: 'testLastName1000'
 }
 
 // RUNNING TEST LOCALLY
@@ -75,11 +72,34 @@ app.use('/', router);
 // TESTING FOR APPOINTMENT PATH
 describe('Appointment', function () {
   let appointment: AppointmentReturnTest | null;
+  let client: UserCreated | null;
+  let interpreter: UserCreated | null;
 
   // Before each, insert data
   beforeEach(async () => {
+    client = await prisma.user.create({
+      data: createUserClient
+    });
+    interpreter = await prisma.user.create({
+      data: createUserInterpreter
+    });
     appointment = await prisma.appointment.create({
-      data: createAppointment,
+      data: {
+        appointmentTitle: "review test",
+        appointmentType: "In-person",
+        mainCategory: "Business", 
+        subCategory: "sub-business",
+        status: 'Requested',
+        clientUserId: client?.id,
+        clientSpokenLanguage: "English",
+        interpreterSpokenLanguage: "Japanese",
+        locationName: "Code Chrysalis",
+        locationAddress: "test address",
+        locationLatitude: 123124,
+        locationLongitude: 4548237,
+        appointmentDateTime: "2023-12-25T10:29:02.366Z",
+        appointmentNote: "test3"
+      }
     });
   });
 
@@ -90,7 +110,17 @@ describe('Appointment', function () {
         where: {
           id: appointment?.id,
         }
-      })
+      });
+      await prisma.user.delete({
+        where: {
+          id: client?.id,
+        }
+      });
+      await prisma.user.delete({
+        where: {
+          id: interpreter?.id,
+        }
+      });
     } catch (err) {
       console.log(err);
     }
@@ -98,7 +128,7 @@ describe('Appointment', function () {
   describe('Find appointment', function () {
     test('should return an array of appointment', async () => {
       const res: Response = await request(app)
-        .get(`/appointment/find/${createAppointment.clientUserId + 1}`);
+        .get(`/appointment/find/${interpreter?.id}`);
       const appointmentData: AppointmentReturnTest[] = JSON.parse(res.text);
       // console.log(res.text);
       expect(res.statusCode).toBe(200);
@@ -118,7 +148,7 @@ describe('Appointment', function () {
 
     test('should not have expired appointment', async () => {
       const res: Response = await request(app)
-        .get(`/appointment/find/${createAppointment.clientUserId + 1}`);
+        .get(`/appointment/find/${interpreter?.id}`);
       const appointmentData: AppointmentReturnTest[] = JSON.parse(res.text);
       // console.log(appointmentData);
       const expiredAppointment = appointmentData.filter(appointment => {
@@ -135,7 +165,7 @@ describe('Appointment', function () {
   describe('Get overview appointment', function () {
     test('should return an array containing object of appointment overview', async () => {
       const res: Response = await request(app)
-        .get(`/appointment/overview/client/current/${createAppointment.clientUserId}`);
+        .get(`/appointment/overview/client/current/${client?.id}`);
       const appointmentData: AppointmentOverview[] = JSON.parse(res.text);
       // console.log(appointmentData);
       expect(res.statusCode).toBe(200);
@@ -186,6 +216,128 @@ describe('Appointment', function () {
     });
   });
 
+  describe('Patch appointment status to accept', function () {
+    test('should succeed', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/accept/${appointment?.id}/${interpreter?.id}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual('Appointment accepted');
+    });
+
+    test('status should be accepted', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/accept/${appointment?.id}/${interpreter?.id}`);
+      const data: { status: string } | null = await prisma.appointment.findUnique({
+        where: {
+          id: appointment?.id,
+        },
+        select: {
+          status: true,
+        }
+      });
+      expect(data?.status).toEqual('Accepted');
+    });
+  });
+
+  describe('Patch appointment status to cancel', function () {
+    test('should change status of the appointment to accept', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/cancel/${appointment?.id}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual('Appointment cancelled');
+    });
+
+    test('status should be cancelled', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/cancel/${appointment?.id}`);
+      const data: { status: string } | null = await prisma.appointment.findUnique({
+        where: {
+          id: appointment?.id,
+        },
+        select: {
+          status: true,
+        }
+      });
+      expect(data?.status).toEqual('Cancelled');
+    });
+  });
+
+  describe('Patch appointment status to complete', function () {
+    test('should change status of the appointment to complete', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/complete/${appointment?.id}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual('Appointment completed');
+    });
+
+    test('status should be completed', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/complete/${appointment?.id}`);
+      const data: { status: string } | null = await prisma.appointment.findUnique({
+        where: {
+          id: appointment?.id,
+        },
+        select: {
+          status: true,
+        }
+      });
+      expect(data?.status).toEqual('Completed');
+    });
+  });
+
+  describe('Add review', function () {
+    test('should be able to add review', async () => {
+      const res: Response = await request(app)
+        .patch(`/appointment/review`)
+        .send({
+          appointmentId: appointment?.id,
+          role: "client",
+          reviewThumb: true,
+          reviewNote: "test"
+        });
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual('Review added');
+      const data: { reviewClientThumb: boolean | null, reviewClientNote: string | null} | null = await prisma.appointment.findUnique({
+        where: {
+          id: appointment?.id,
+        },
+        select: {
+          reviewClientThumb: true,
+          reviewClientNote: true
+        }
+      });
+      expect(data?.reviewClientThumb).toEqual(true);
+      expect(data?.reviewClientNote).toEqual('test');
+    });
+  });
+
+  describe('Update appointment', function () {
+    test('It should be albe to update appointment data', async () => {
+      const updateAppointmentData = {
+        id: appointment?.id,
+        appointmentTitle: 'update title',
+        appointmentType: "In-person",
+        mainCategory: "Business", 
+        subCategory: "sub-business",
+        clientUserId: 68,
+        clientSpokenLanguage: "English",
+        interpreterSpokenLanguage: "Japanese",
+        locationName: "Code Chrysalis",
+        locationAddress: "test address",
+        locationLatitude: 123124,
+        locationLongitude: 4548237,
+        appointmentDateTime: "2023-12-25T10:29:02.366Z",
+        appointmentNote: "test3"
+      }
+
+      const res: Response = await request(app)
+        .put('/appointment')
+        .send(updateAppointmentData);
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual('Appointment data updated');
+    });
+  });
+
   describe('Create appointment', function () {
     afterAll( async () => {
       try {
@@ -220,7 +372,7 @@ describe('Appointment', function () {
         .post('/appointment')
         .send(newAppointment);
       expect(res.statusCode).toBe(201);
-      expect(res.text).toEqual('Appointment created in backend database')
+      expect(res.text).toEqual('Appointment created in backend database');
     });
   });
 });
