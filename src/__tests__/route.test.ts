@@ -84,21 +84,63 @@ describe('User', function () {
     });
 
    describe('When user does not exist', () => {
-      it('should return an empty object', async () => {
+      it('should return false', async () => {
         const res = await request(app)
-          .get('/user/check/randomemail')
+          .get('/user/check/randomemail');
         expect(res.statusCode).toBe(200);
         expect(res.text).toBe('false');
       })
    });
   });
   
-  describe('Get User', () => {
-    describe('When user exist', async () => {
+  describe('Get user basic info', () => {
+    describe('When user exist', () => {
+      it('should return an object', async () => {
+        const res = await request(app)
+          .get(`/user/${createUser.uid}`);
+        const userData = JSON.parse(res.text);
+        // console.log(res.text);
+        // console.log(userData);
+        expect(res.statusCode).toBe(200);
+        expect(typeof userData).toBe("object");
+      });
 
+      it('the object returned should only contain id, firstName, lastName', async () => {
+        const res = await request(app)
+          .get(`/user/${createUser.uid}`);
+        const userData = JSON.parse(res.text);
+        expect(userData).toHaveProperty('id');
+        expect(userData).toHaveProperty('firstName');
+        expect(userData).toHaveProperty('lastName');
+        expect(userData.firstName).toBe(createUser.firstName);
+        expect(userData.lastName).toBe(createUser.lastName);
+      });
     });
 
-    
+    describe('Get user detail', () => {
+      describe('When user exist', () => {
+        it('should return an object', async () => {
+          const res = await request(app)
+            .get(`/user/detail/${createUser.uid}`);
+          const userData = JSON.parse(res.text);
+          expect(res.statusCode).toBe(200);
+          expect(typeof userData).toBe("object");
+        });
+
+        it('the object returned should only contain various information', async () => {
+          const res = await request(app)
+            .get(`/user/detail/${createUser.uid}`);
+          const userData = JSON.parse(res.text);
+          expect(userData).toHaveProperty('id');
+          expect(userData).toHaveProperty('email');
+          expect(userData).toHaveProperty('firstName');
+          expect(userData).toHaveProperty('lastName');
+          expect(userData).toHaveProperty('profilePicture');
+          expect(userData).toHaveProperty('about');
+          expect(userData).toHaveProperty('userLanguage');
+        });
+      });
+    });
   });
 
   describe('Create user', () => {
@@ -143,5 +185,8 @@ describe('User', function () {
     });
   });
 
+  describe('Update user', () => {
+
+  });
 
 });
