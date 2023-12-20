@@ -1,13 +1,31 @@
 // IMPORTING MODULES
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import express, { Express } from 'express';
 import router from '../routes';
-import { PrismaClient } from '@prisma/client';
-import fixtures from '../fixtures';
 import cors from "cors";
+import { PrismaClient } from '@prisma/client';
+import { UserCreate, UserLanguage, UserCreated, UserGet, UserGetDetail, UserUpdateInfo2, UserUpdateLanguage2, UserCheck } from '../globals';
+
 
 // INITIATING PRISMA
 const prisma = new PrismaClient();
+
+
+// INTERFACE
+interface User {
+  uid: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+// SEED DATA
+const createUser: User = {
+  uid: 'testuid1000',
+  email: 'testemail1000',
+  firstName: 'testfirstname1000',
+  lastName: 'testLastName1000'
+}
 
 // RUNNING TEST LOCALLY
 // a separate server is created to avoid conflict with main server
@@ -19,46 +37,84 @@ app.use('/', router);
 // TESTING FOR SERVER AVAILABILITY
 describe('Server', function () {
   test('responds to /', async () => {
-    const res = await request(app).get('/');
+    const res: Response = await request(app).get('/');
     expect(res.header['content-type']).toBe('text/html; charset=utf-8');
     expect(res.statusCode).toBe(200);
     expect(res.text).toEqual('Express + TypeScript (AND WEBSOCKETS :)) Server, Yo! Hello');
-    console.log(res.text);
+    // console.log(res.text);
   });
-  
-  // test('responds to /hello/:name', async () => {
-  //   const res = await request(app).get('/hello/jaxnode'); 
-  //   expect(res.header['content-type']).toBe('text/html; charset=utf-8');
-  //   expect(res.statusCode).toBe(200);
-  //   expect(res.text).toEqual('hello jaxnode!');
-  // });
-
-  // test('responds to /hello/Annie', async () => {
-  //   const res = await request(app).get('/hello/Annie'); 
-  //   expect(res.header['content-type']).toBe('text/html; charset=utf-8');
-  //   expect(res.statusCode).toBe(200);
-  //   expect(res.text).toEqual('hello Annie!');
-  // });
 });
 
 // TESTING FOR USER PATH
 describe('User', function () {
-  test('Create user', async () => {
-    console.log(fixtures.createUser());
-    const res = await request(app)
-      .post('/user')
-      .send(fixtures.createUser());
-    expect(res.statusCode).toBe(201);
-    expect(res.text).toEqual('User created in backend database');
+  let userFixture: User | null;
 
-    if (res.statusCode === 201) {
+  // Before each, insert data
+  beforeEach(async () => {
+    userFixture = createUser;
+    await request(app)
+      .post('/user')
+      .send(createUser)
+      .then((result) => {
+        // console.log("inserted test customer");
+      })
+      .catch(console.error);
+  });
+
+  // After each, remove data
+  afterEach(async () => {
+    try {
       await prisma.user.delete({
         where: {
           uid: 'testuid1000'
         }
       })
+    } catch (err) {
+      console.log(err);
     }
-  })
+  });
+
+  describe('Create User', () => {
+    afterAll( async () => {
+      try {
+        await prisma.user.delete({
+          where: {
+            uid: 'testuid1500'
+          }
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test('It should create a new user', async () => {
+      const newUser: User = {
+        uid: 'testuid1500',
+        email: 'testemail1500',
+        firstName: 'testfirstname1500',
+        lastName: 'testLastName1500'
+      }
+
+      const res: Response = await request(app)
+        .post('/user')
+        .send(newUser);
+      expect(res.statusCode).toBe(201);
+      expect(res.text).toEqual('User created in backend database');
+      
+      const data: User | null = await prisma.user.findUnique({
+        where: {
+          uid: newUser.uid,
+        },
+        select: {
+          uid: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        }
+      });
+      expect(data).toEqual(newUser);
+    });
+  });
 });
 
 // console.log(fixtures.getUser());
