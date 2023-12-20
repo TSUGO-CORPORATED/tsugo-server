@@ -61,14 +61,14 @@ export interface UserLanguage {
 
 export interface UserUpdateInfo {
   uid: string,
-  userId: number,
+  userId: number | undefined,
   firstName: string,
   lastName: string,
   about?: string,
 }
 
 export interface UserUpdateInfo2 {
-  userId:  number,
+  userId:  number | undefined,
   firstName: string,
   lastName: string,
   about?: string,

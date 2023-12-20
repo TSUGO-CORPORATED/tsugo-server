@@ -105,22 +105,22 @@ export default {
       await userModel.updateUserInfo({ userId, firstName, lastName, about });
 
       // Update language
-      const updatedLanguages: UserUpdateLanguage[] = req.body.languages;
-      for (const language of updatedLanguages) {
-        const changedLanguage: UserUpdateLanguage2 = {
-            id: language.id || 0,
-              // this assigns id 0 if the language is new
-            userId: userId,
-            language: language.language,
-            proficiency: language.proficiency,
-            certifications: language.certifications,
-        }
-        console.log(changedLanguage);
-        await userModel.updateUserLanguage(changedLanguage);
-          // update can only be done per record, so have to use loop
-      }
+      // const updatedLanguages: UserUpdateLanguage[] = req.body.languages;
+      // for (const language of updatedLanguages) {
+      //   const changedLanguage: UserUpdateLanguage2 = {
+      //       id: language.id || 0,
+      //         // this assigns id 0 if the language is new
+      //       userId: userId,
+      //       language: language.language,
+      //       proficiency: language.proficiency,
+      //       certifications: language.certifications,
+      //   }
+      //   console.log(changedLanguage);
+      //   await userModel.updateUserLanguage(changedLanguage);
+      //     // update can only be done per record, so have to use loop
+      // }
 
-      res.status(200).send(JSON.stringify("User info updated"));
+      res.status(200).send("User info updated");
     } catch {
       res.status(500).send("Failed to update user");
     }

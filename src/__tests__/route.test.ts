@@ -4,22 +4,15 @@ import express, { Express } from 'express';
 import router from '../routes';
 import cors from "cors";
 import { PrismaClient } from '@prisma/client';
+import { UserCreate, UserGet, UserGetDetail, UserUpdateInfo, UserUpdateInfo2 } from '../globals';
+import { create } from 'domain';
 
 
 // INITIATING PRISMA
 const prisma = new PrismaClient();
 
-
-// INTERFACE
-interface User {
-  uid: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
 // SEED DATA
-const createUser: User = {
+const createUser: UserCreate = {
   uid: 'testuid1000',
   email: 'testemail1000',
   firstName: 'testfirstname1000',
@@ -46,7 +39,7 @@ describe('Server', function () {
 
 // TESTING FOR USER PATH
 describe('User', function () {
-  let userFixture: User | null;
+  let userFixture: UserCreate | null;
 
   // Before each, insert data
   beforeEach(async () => {
@@ -75,40 +68,42 @@ describe('User', function () {
 
   describe('Check user', () => {
     describe('When user exist', () => {
-      it('should return true', async () => {
-        const res = await request(app)
-          .get(`/user/check/${createUser.email}`)
+      test('should return true', async () => {
+        const res: Response = await request(app)
+          .get(`/user/check/${createUser.email}`);
+        const check: boolean = JSON.parse(res.text);
         expect(res.statusCode).toBe(200);
-        expect(res.text).toBe('true');
+        expect(check).toBe(true);
       });
     });
 
    describe('When user does not exist', () => {
-      it('should return false', async () => {
-        const res = await request(app)
+      test('should return false', async () => {
+        const res: Response = await request(app)
           .get('/user/check/randomemail');
+        const check: boolean = JSON.parse(res.text)
         expect(res.statusCode).toBe(200);
-        expect(res.text).toBe('false');
+        expect(check).toBe(false);
       })
    });
   });
   
   describe('Get user basic info', () => {
     describe('When user exist', () => {
-      it('should return an object', async () => {
-        const res = await request(app)
+      test('should return an object', async () => {
+        const res: Response = await request(app)
           .get(`/user/${createUser.uid}`);
-        const userData = JSON.parse(res.text);
+        const userData: UserGet = JSON.parse(res.text);
         // console.log(res.text);
         // console.log(userData);
         expect(res.statusCode).toBe(200);
         expect(typeof userData).toBe("object");
       });
 
-      it('the object returned should only contain id, firstName, lastName', async () => {
-        const res = await request(app)
+      test('the object returned should only contain id, firstName, lastName', async () => {
+        const res: Response = await request(app)
           .get(`/user/${createUser.uid}`);
-        const userData = JSON.parse(res.text);
+        const userData: UserGet = JSON.parse(res.text);
         expect(userData).toHaveProperty('id');
         expect(userData).toHaveProperty('firstName');
         expect(userData).toHaveProperty('lastName');
@@ -119,18 +114,18 @@ describe('User', function () {
 
     describe('Get user detail', () => {
       describe('When user exist', () => {
-        it('should return an object', async () => {
-          const res = await request(app)
+        test('should return an object', async () => {
+          const res: Response = await request(app)
             .get(`/user/detail/${createUser.uid}`);
-          const userData = JSON.parse(res.text);
+          const userData: UserGetDetail = JSON.parse(res.text);
           expect(res.statusCode).toBe(200);
           expect(typeof userData).toBe("object");
         });
 
         it('the object returned should only contain various information', async () => {
-          const res = await request(app)
+          const res: Response = await request(app)
             .get(`/user/detail/${createUser.uid}`);
-          const userData = JSON.parse(res.text);
+          const userData: UserGetDetail = JSON.parse(res.text);
           expect(userData).toHaveProperty('id');
           expect(userData).toHaveProperty('email');
           expect(userData).toHaveProperty('firstName');
@@ -138,6 +133,10 @@ describe('User', function () {
           expect(userData).toHaveProperty('profilePicture');
           expect(userData).toHaveProperty('about');
           expect(userData).toHaveProperty('userLanguage');
+          expect(userData).toHaveProperty('clientTotalThumbsUp');
+          expect(userData).toHaveProperty('clientTotalThumbsDown');
+          expect(userData).toHaveProperty('interpreterTotalThumbsUp');
+          expect(userData).toHaveProperty('interpreterTotalThumbsDown');
         });
       });
     });
@@ -157,7 +156,7 @@ describe('User', function () {
     });
 
     test('It should create a new user', async () => {
-      const newUser: User = {
+      const newUser: UserCreate = {
         uid: 'testuid1500',
         email: 'testemail1500',
         firstName: 'testfirstname1500',
@@ -170,7 +169,7 @@ describe('User', function () {
       expect(res.statusCode).toBe(201);
       expect(res.text).toEqual('User created in backend database');
       
-      const data: User | null = await prisma.user.findUnique({
+      const data: UserCreate | null = await prisma.user.findUnique({
         where: {
           uid: newUser.uid,
         },
@@ -186,7 +185,75 @@ describe('User', function () {
   });
 
   describe('Update user', () => {
+    test('It should be able to update the user data', async () => {
+      const userData = await prisma.user.findUnique({
+        where: {
+          uid: createUser.uid,
+        },
+        select: {
+          id: true
+        }
+      });
 
+      const updateUser: UserUpdateInfo  = {
+        uid: 'testuid1000',
+        userId: userData?.id,
+        firstName: 'testfirstname1000update',
+        lastName: 'testLastName1000update',
+        about: 'aboutupdate'
+      }
+
+      const res: Response = await request(app)
+        .put('/user')
+        .send(updateUser);
+      expect(res.statusCode).toBe(200);
+      expect(res.text).toEqual("User info updated");
+      const data = await prisma.user.findUnique({
+        where: {
+          id: userData?.id,
+        },
+        select: {
+          uid: true,
+          id: true,
+          firstName: true,
+          lastName: true,
+          about: true,
+        }
+      });
+      const processedData = {
+        uid: data?.uid,
+        userId: data?.id,
+        firstName: data?.firstName,
+        lastName: data?.lastName,
+        about: data?.about
+      }
+      expect(updateUser).toEqual(processedData);
+    });
   });
 
+  describe('Delete user', () => {
+    test('It should delete user, by modifying its info', async () => {
+      const res: Response = await request(app)
+        .delete(`/user/${createUser.uid}`);
+      expect(res.statusCode).toBe(204);
+      const data = await prisma.user.findUnique({
+        where: {
+          uid: createUser.uid,
+        },
+        select: {
+          email: true,
+          firstName: true,
+          lastName: true,
+          about: true,
+        }
+      });
+      const expectedData = {
+        email: `Deleted user ${createUser.uid}`,
+        firstName: 'Deleted user',
+        lastName: 'Deleted user',
+        about: 'Deleted user',
+      }
+      expect(data).toEqual(expectedData);
+    });
+  });
 });
